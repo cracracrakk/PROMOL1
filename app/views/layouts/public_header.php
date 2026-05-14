@@ -6,6 +6,8 @@
     <title><?= e($pageTitle ?? brand_name()) ?> · <?= e(setting('spa_tagline', 'Bienestar y armonía')) ?></title>
     <meta name="description" content="<?= e($pageDescription ?? setting('spa_description', '')) ?>">
     <link rel="icon" href="<?= asset('img/favicon.svg') ?>" type="image/svg+xml">
+    <link rel="manifest" href="<?= url('/manifest.json') ?>">
+    <meta name="theme-color" content="<?= e(setting('color_primary', '#6b8a7a')) ?>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">

@@ -24,6 +24,7 @@
                 <p><a href="<?= url('/servicios') ?>">Servicios</a></p>
                 <p><a href="<?= url('/regalo') ?>">Tarjetas Regalo</a></p>
                 <p><a href="<?= url('/reservar') ?>">Reservar Cita</a></p>
+                <p><a href="<?= url('/mi-cuenta') ?>">Mi cuenta</a></p>
                 <p><a href="<?= url('/login') ?>">Acceso Personal</a></p>
             </div>
         </div>
@@ -44,5 +45,6 @@
 <?php endif; ?>
 
 <script src="<?= asset('js/public.js') ?>"></script>
+<script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('<?= url('/sw.js') ?>');</script>
 </body>
 </html>

@@ -76,6 +76,9 @@ CREATE TABLE IF NOT EXISTS customers (
     gdpr_consent_at DATETIME NULL,
     notes TEXT NULL,
     no_show_count INT NOT NULL DEFAULT 0,
+    portal_password VARCHAR(255) NULL COMMENT 'Hash bcrypt para portal cliente',
+    portal_token VARCHAR(64) NULL COMMENT 'Token de login mágico',
+    portal_token_expires DATETIME NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     INDEX idx_customer_phone (phone),
@@ -416,6 +419,28 @@ CREATE TABLE IF NOT EXISTS audit_log (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
     INDEX idx_audit_date (created_at),
     INDEX idx_audit_entity (entity, entity_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Encuestas NPS post-servicio
+CREATE TABLE IF NOT EXISTS surveys (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    appointment_id INT UNSIGNED NULL,
+    customer_id INT UNSIGNED NULL,
+    nps TINYINT NOT NULL DEFAULT 0 COMMENT 'Net Promoter Score 0-10',
+    comment TEXT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (appointment_id) REFERENCES appointments(id) ON DELETE SET NULL,
+    FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Intentos de login fallidos (rate limit)
+CREATE TABLE IF NOT EXISTS login_attempts (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(160) NULL,
+    ip VARCHAR(45) NOT NULL,
+    success TINYINT(1) DEFAULT 0,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_attempts_ip_time (ip, created_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Códigos promocionales / descuentos

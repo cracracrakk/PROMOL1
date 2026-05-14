@@ -39,10 +39,36 @@ $router->post('/reservar',       'HomeController@submitBooking');
 $router->get ('/regalo',         'HomeController@giftCard');
 $router->post('/regalo',         'HomeController@submitGiftCard');
 
+// ----- Setup wizard (instalación) -----
+$router->get ('/setup',         'SetupController@welcome');
+$router->get ('/setup/paso-1',  'SetupController@step1');
+$router->post('/setup/paso-1',  'SetupController@step1');
+$router->get ('/setup/paso-2',  'SetupController@step2');
+$router->post('/setup/paso-2',  'SetupController@step2');
+$router->get ('/setup/paso-3',  'SetupController@step3');
+$router->post('/setup/paso-3',  'SetupController@step3');
+
 // ----- Auth -----
-$router->get ('/login',  'AuthController@showLogin');
-$router->post('/login',  'AuthController@login');
-$router->get ('/logout', 'AuthController@logout');
+$router->get ('/login',     'AuthController@showLogin');
+$router->post('/login',     'AuthController@login');
+$router->get ('/login/2fa', 'AuthController@showTwoFactor');
+$router->post('/login/2fa', 'AuthController@verifyTwoFactor');
+$router->get ('/logout',    'AuthController@logout');
+
+// ----- Tokens públicos de cita -----
+$router->get ('/cita/confirmar/{token}', 'PublicAppointmentController@confirm');
+$router->get ('/cita/cancelar/{token}',  'PublicAppointmentController@cancel');
+$router->get ('/cita/encuesta/{token}',  'PublicAppointmentController@survey');
+$router->post('/cita/encuesta/{token}',  'PublicAppointmentController@survey');
+
+// ----- Portal del cliente -----
+$router->get ('/mi-cuenta',                    'CustomerPortalController@login');
+$router->post('/mi-cuenta/acceso',             'CustomerPortalController@sendMagicLink');
+$router->get ('/mi-cuenta/acceso/{token}',     'CustomerPortalController@authenticate');
+$router->get ('/mi-cuenta/inicio',             'CustomerPortalController@dashboard');
+$router->get ('/mi-cuenta/perfil',             'CustomerPortalController@profile');
+$router->post('/mi-cuenta/perfil',             'CustomerPortalController@profile');
+$router->get ('/mi-cuenta/salir',              'CustomerPortalController@logout');
 
 // ----- Dashboard -----
 $router->get('/admin',           'DashboardController@index');
@@ -121,6 +147,9 @@ $router->post('/admin/sistema/usuarios/guardar',      'SystemController@userSave
 $router->post('/admin/sistema/usuarios/{id}/eliminar','SystemController@userDelete');
 $router->get ('/admin/sistema/sar',                   'SystemController@sar');
 $router->post('/admin/sistema/sar/guardar',           'SystemController@sarSave');
+$router->get ('/admin/sistema/2fa',                   'SystemController@twoFactorSetup');
+$router->post('/admin/sistema/2fa/verificar',         'SystemController@twoFactorVerify');
+$router->post('/admin/sistema/2fa/desactivar',        'SystemController@twoFactorDisable');
 $router->get ('/admin/sistema/auditoria',             'SystemController@audit');
 
 try {

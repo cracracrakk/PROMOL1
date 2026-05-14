@@ -79,4 +79,19 @@
     </div>
 </form>
 
+<div class="card">
+    <h3>🔒 Seguridad de mi cuenta</h3>
+    <?php $me = Database::fetch('SELECT two_factor_secret FROM users WHERE id = ?', [Auth::id()]); ?>
+    <?php if (empty($me['two_factor_secret'])): ?>
+        <p style="margin-bottom:14px;">Refuerza tu cuenta con autenticación en dos pasos.</p>
+        <a href="<?= url('/admin/sistema/2fa') ?>" class="btn-admin">Activar 2FA</a>
+    <?php else: ?>
+        <p style="margin-bottom:14px;">✅ 2FA está activado en tu cuenta.</p>
+        <form method="post" action="<?= url('/admin/sistema/2fa/desactivar') ?>" data-confirm="¿Desactivar 2FA?" style="display:inline;">
+            <?= csrf_field() ?>
+            <button type="submit" class="btn-admin btn-danger">Desactivar 2FA</button>
+        </form>
+    <?php endif; ?>
+</div>
+
 <?php require dirname(__DIR__, 2) . '/layouts/admin_footer.php'; ?>

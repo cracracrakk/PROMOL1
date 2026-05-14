@@ -137,6 +137,41 @@ class SystemController {
         redirect('/admin/sistema/sar');
     }
 
+    // ===== 2FA =====
+    public function twoFactorSetup(): void {
+        require_once dirname(__DIR__) . '/core/Totp.php';
+        $user = Database::fetch('SELECT * FROM users WHERE id = ?', [Auth::id()]);
+        if (empty($user['two_factor_secret'])) {
+            $secret = Totp::generateSecret();
+            Database::update('users', ['two_factor_secret' => $secret], 'id = :id', ['id' => Auth::id()]);
+            $user['two_factor_secret'] = $secret;
+        }
+        $qr = Totp::qrUrl($user['two_factor_secret'], $user['email'], setting('spa_name', 'Spa'));
+        view('admin/sistema/two_factor', ['secret' => $user['two_factor_secret'], 'qr' => $qr]);
+    }
+
+    public function twoFactorVerify(): void {
+        csrf_verify();
+        require_once dirname(__DIR__) . '/core/Totp.php';
+        $user = Database::fetch('SELECT * FROM users WHERE id = ?', [Auth::id()]);
+        $code = trim($_POST['code'] ?? '');
+        if (!Totp::verify($user['two_factor_secret'], $code)) {
+            flash('error','Código incorrecto. Vuelve a intentarlo.');
+            redirect('/admin/sistema/2fa');
+        }
+        flash('success','2FA activado. La próxima vez que inicies sesión necesitarás el código.');
+        audit('enable_2fa','user',Auth::id());
+        redirect('/admin/sistema');
+    }
+
+    public function twoFactorDisable(): void {
+        csrf_verify();
+        Database::update('users', ['two_factor_secret' => null], 'id = :id', ['id' => Auth::id()]);
+        audit('disable_2fa','user',Auth::id());
+        flash('success','2FA desactivado.');
+        redirect('/admin/sistema');
+    }
+
     // ===== AUDITORIA =====
     public function audit(): void {
         $logs = Database::fetchAll(

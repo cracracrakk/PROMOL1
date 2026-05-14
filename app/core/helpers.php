@@ -132,6 +132,24 @@ function dt(?string $datetime, string $format = 'd/m/Y H:i'): string {
     return date($format, strtotime($datetime));
 }
 
+/**
+ * Traducción i18n. Lee /app/lang/<locale>.php
+ * Locale por defecto desde settings o config.
+ */
+function t(string $key, string $default = null): string {
+    static $cache = null;
+    if ($cache === null) {
+        $locale = $_SESSION['locale'] ?? setting('locale', 'es');
+        $file = dirname(__DIR__) . '/lang/' . preg_replace('/[^a-z]/', '', $locale) . '.php';
+        $cache = file_exists($file) ? require $file : [];
+    }
+    return $cache[$key] ?? ($default ?? $key);
+}
+
+function set_locale(string $locale): void {
+    $_SESSION['locale'] = preg_replace('/[^a-z]/', '', strtolower($locale));
+}
+
 function slugify(string $s): string {
     $s = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $s);
     $s = preg_replace('~[^\pL\d]+~u', '-', $s);
