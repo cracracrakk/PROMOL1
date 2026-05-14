@@ -49,9 +49,22 @@ class SystemController {
     public function userSave(): void {
         csrf_verify();
         $id = (int)($_POST['id'] ?? 0);
+        $email = trim($_POST['email']);
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            flash('error','Email inválido.');
+            back();
+        }
+        // Comprobar duplicado
+        $existing = Database::fetch('SELECT id FROM users WHERE email = ? AND id != ?', [$email, $id]);
+        if ($existing) {
+            flash('error','Ya existe un usuario con ese email.');
+            back();
+        }
+
         $data = [
             'name'   => trim($_POST['name']),
-            'email'  => trim($_POST['email']),
+            'email'  => $email,
             'role'   => $_POST['role'],
             'phone'  => trim($_POST['phone'] ?? '') ?: null,
             'bio'    => trim($_POST['bio'] ?? '') ?: null,
@@ -59,6 +72,10 @@ class SystemController {
             'active' => isset($_POST['active']) ? 1 : 0,
         ];
         if (!empty($_POST['password'])) {
+            if (strlen($_POST['password']) < 6) {
+                flash('error','La contraseña debe tener al menos 6 caracteres.');
+                back();
+            }
             $data['password'] = password_hash($_POST['password'], PASSWORD_BCRYPT);
         }
         if ($id) {

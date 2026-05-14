@@ -70,6 +70,7 @@ class AppointmentController {
         csrf_verify();
         $id = (int)$id;
         $service = Database::fetch('SELECT * FROM services WHERE id = ?', [(int)$_POST['service_id']]);
+        if (!$service) { flash('error','Servicio inválido.'); back(); }
         $startsAt = $_POST['date'] . ' ' . $_POST['time'] . ':00';
         $endsAt   = date('Y-m-d H:i:s', strtotime($startsAt) + ($service['duration_minutes'] * 60));
 
@@ -80,6 +81,7 @@ class AppointmentController {
             'room_id'      => !empty($_POST['room_id']) ? (int)$_POST['room_id'] : null,
             'starts_at'    => $startsAt,
             'ends_at'      => $endsAt,
+            'price'        => $service['price'],
             'status'       => $_POST['status'],
             'notes'        => trim($_POST['notes'] ?? ''),
         ], 'id = :id', ['id' => $id]);

@@ -95,6 +95,17 @@ $formAction = $isEdit ? url('/admin/citas/' . $appointment['id'] . '/editar') : 
     <div class="form-actions">
         <?php if ($isEdit): ?>
             <button type="submit" form="deleteForm" class="btn-admin btn-danger">Eliminar cita</button>
+            <?php
+            // Botón WhatsApp si el cliente tiene teléfono
+            $cust = Database::fetch('SELECT * FROM customers WHERE id = ?', [(int)$appointment['customer_id']]);
+            $svc  = Database::fetch('SELECT name FROM services WHERE id = ?', [(int)$appointment['service_id']]);
+            if ($cust && !empty($cust['phone'])):
+                $waUrl = whatsapp_appointment_link($appointment, $cust, $svc['name'] ?? '');
+            ?>
+                <a href="<?= e($waUrl) ?>" target="_blank" class="btn-admin" style="background:#25D366;">
+                    📱 Confirmar por WhatsApp
+                </a>
+            <?php endif; ?>
         <?php endif; ?>
         <a href="<?= url('/admin/citas/agenda') ?>" class="btn-admin btn-outline">Cancelar</a>
         <button type="submit" class="btn-admin"><?= $isEdit ? 'Guardar cambios' : 'Crear cita' ?></button>

@@ -23,6 +23,8 @@ require dirname(__DIR__) . '/app/core/helpers.php';
 require dirname(__DIR__) . '/app/core/Database.php';
 require dirname(__DIR__) . '/app/core/Auth.php';
 require dirname(__DIR__) . '/app/core/Router.php';
+require dirname(__DIR__) . '/app/core/Mail.php';
+require dirname(__DIR__) . '/app/core/SarHelper.php';
 
 $router = new Router();
 
@@ -97,6 +99,9 @@ $router->get ('/admin/bonos',         'GiftController@index');
 $router->post('/admin/bonos/regalo',  'GiftController@storeGift');
 $router->post('/admin/bonos/bono',    'GiftController@storePack');
 $router->post('/admin/bonos/asignar', 'GiftController@assignPack');
+
+// ----- POS (caja rápida) -----
+$router->get('/admin/pos', 'PosController@index');
 
 // ----- Caja diaria -----
 $router->get ('/admin/caja',        'CashController@index');

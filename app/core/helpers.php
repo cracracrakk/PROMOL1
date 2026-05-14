@@ -27,6 +27,12 @@ function redirect(string $url): void { header("Location: $url"); exit; }
 
 function back(): void {
     $ref = $_SERVER['HTTP_REFERER'] ?? '/';
+    // Solo permitir redirects al mismo host (anti open redirect)
+    $host = $_SERVER['HTTP_HOST'] ?? '';
+    $parsed = parse_url($ref);
+    if (isset($parsed['host']) && $parsed['host'] !== $host) {
+        $ref = '/';
+    }
     redirect($ref);
 }
 
@@ -165,5 +171,29 @@ function brand_name(): string {
 
 function brand_logo(): ?string {
     $logo = setting('spa_logo', '');
-    return $logo ? asset('uploads/' . $logo) : null;
+    if (!$logo) return null;
+    $path = dirname(__DIR__, 2) . '/public/assets/uploads/' . $logo;
+    return file_exists($path) ? asset('uploads/' . $logo) : null;
+}
+
+/**
+ * Construye una URL de WhatsApp con mensaje precargado.
+ * El cliente puede hacer click directamente para enviarle al spa.
+ */
+function whatsapp_link(string $phone, string $message = ''): string {
+    $phone = preg_replace('/\D/', '', $phone);
+    return 'https://wa.me/' . $phone . ($message ? '?text=' . urlencode($message) : '');
+}
+
+/**
+ * Mensaje predefinido de confirmación de cita por WhatsApp.
+ */
+function whatsapp_appointment_link(array $appointment, array $customer, string $service): string {
+    $phone = $customer['phone'] ?? '';
+    $name  = trim($customer['first_name'] . ' ' . ($customer['last_name'] ?? ''));
+    $date  = dt($appointment['starts_at'], 'd/m/Y');
+    $time  = dt($appointment['starts_at'], 'H:i');
+    $brand = brand_name();
+    $msg   = "Hola {$name}, soy de {$brand}. Te confirmamos tu cita de {$service} para el {$date} a las {$time}. ¿Te queda bien?";
+    return whatsapp_link($phone, $msg);
 }

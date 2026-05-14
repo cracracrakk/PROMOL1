@@ -103,7 +103,7 @@ class HomeController {
         $startsAt = $_POST['date'] . ' ' . $_POST['time'] . ':00';
         $endsAt   = date('Y-m-d H:i:s', strtotime($startsAt) + ($service['duration_minutes'] * 60));
 
-        Database::insert('appointments', [
+        $appointmentId = Database::insert('appointments', [
             'customer_id'  => $customerId,
             'service_id'   => $service['id'],
             'starts_at'    => $startsAt,
@@ -115,8 +115,13 @@ class HomeController {
             'confirmation_token' => bin2hex(random_bytes(16)),
         ]);
 
+        // Email de confirmación al cliente
+        $appointment = Database::fetch('SELECT * FROM appointments WHERE id = ?', [$appointmentId]);
+        $customer    = Database::fetch('SELECT * FROM customers WHERE id = ?', [$customerId]);
+        Mail::sendBookingPending($appointment, $customer, $service);
+
         forgetOld();
-        flash('success', '¡Solicitud recibida! Te contactaremos para confirmar la cita.');
+        flash('success', '¡Solicitud recibida! Te enviamos un email de confirmación.');
         redirect('/reservar');
     }
 
@@ -136,7 +141,7 @@ class HomeController {
             redirect('/regalo');
         }
 
-        Database::insert('gift_cards', [
+        $cardId = Database::insert('gift_cards', [
             'code'             => 'GC-' . randomCode(8),
             'initial_amount'   => $amount,
             'balance'          => $amount,
@@ -149,6 +154,10 @@ class HomeController {
             'expires_at'       => date('Y-m-d H:i:s', strtotime('+1 year')),
             'status'           => 'activa',
         ]);
+
+        // Email al comprador (notificación de solicitud)
+        Mail::send($buyerEmail, 'Tu solicitud de tarjeta regalo - ' . brand_name(),
+            '<h2>Solicitud recibida</h2><p>Hemos recibido tu solicitud de tarjeta regalo por ' . money($amount) . '. Te contactaremos en breve para coordinar el pago.</p>');
 
         forgetOld();
         flash('success', '¡Solicitud recibida! Te contactaremos para coordinar el pago.');

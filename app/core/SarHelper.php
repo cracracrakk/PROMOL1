@@ -60,7 +60,7 @@ class SarHelper {
     public static function numberToWords(float $amount, string $currency = 'LEMPIRAS'): string {
         $entero = (int) floor($amount);
         $decimal = (int) round(($amount - $entero) * 100);
-        $letras = strtoupper(self::convertNumber($entero));
+        $letras = mb_strtoupper(self::convertNumber($entero), 'UTF-8');
         return "{$letras} {$currency} CON " . str_pad((string)$decimal, 2, '0', STR_PAD_LEFT) . '/100';
     }
 

@@ -68,7 +68,9 @@ class InventoryController {
 
     public function movement($id): void {
         csrf_verify();
-        $type = $_POST['type'];
+        $allowed = ['entrada','salida','ajuste','venta','consumo'];
+        $type = $_POST['type'] ?? '';
+        if (!in_array($type, $allowed, true)) { flash('error','Tipo de movimiento inválido.'); back(); }
         $qty  = (int)$_POST['quantity'];
         $reason = trim($_POST['reason'] ?? '');
         if ($qty <= 0) { flash('error','Cantidad inválida.'); back(); }
