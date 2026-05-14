@@ -457,4 +457,61 @@ CREATE TABLE IF NOT EXISTS promo_codes (
     active TINYINT(1) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Sucursales (multi-local)
+CREATE TABLE IF NOT EXISTS branches (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(120) NOT NULL,
+    address VARCHAR(255) NULL,
+    phone VARCHAR(40) NULL,
+    email VARCHAR(160) NULL,
+    sar_cai_prefix VARCHAR(20) NULL,
+    timezone VARCHAR(60) DEFAULT 'America/Tegucigalpa',
+    active TINYINT(1) DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Wallet / saldo prepagado del cliente
+CREATE TABLE IF NOT EXISTS customer_wallets (
+    customer_id INT UNSIGNED PRIMARY KEY,
+    balance DECIMAL(10,2) NOT NULL DEFAULT 0,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS wallet_transactions (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    customer_id INT UNSIGNED NOT NULL,
+    amount DECIMAL(10,2) NOT NULL COMMENT 'Positivo = recarga, negativo = uso',
+    type ENUM('recarga','consumo','ajuste','devolucion') NOT NULL,
+    invoice_id INT UNSIGNED NULL,
+    reason VARCHAR(255) NULL,
+    user_id INT UNSIGNED NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE,
+    FOREIGN KEY (invoice_id) REFERENCES invoices(id) ON DELETE SET NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Newsletters enviados
+CREATE TABLE IF NOT EXISTS newsletters (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    subject VARCHAR(255) NOT NULL,
+    body TEXT NOT NULL,
+    segment VARCHAR(40) NULL,
+    recipients INT NOT NULL DEFAULT 0,
+    sent INT NOT NULL DEFAULT 0,
+    user_id INT UNSIGNED NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Plantillas de email editables
+CREATE TABLE IF NOT EXISTS email_templates (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `key` VARCHAR(60) NOT NULL UNIQUE,
+    subject VARCHAR(255) NOT NULL,
+    body TEXT NOT NULL,
+    variables TEXT NULL COMMENT 'Lista de variables disponibles',
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 SET FOREIGN_KEY_CHECKS = 1;

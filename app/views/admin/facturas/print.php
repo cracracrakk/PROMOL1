@@ -110,5 +110,11 @@
     <div class="no-print" style="text-align:center;margin-top:30px;">
         <button onclick="window.print()" style="padding:10px 24px;background:#6b8a7a;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:14px;">Imprimir / Guardar PDF</button>
     </div>
+    <script>
+        // Auto-imprimir si se accede con ?auto=1
+        if (window.location.search.includes('auto=1')) {
+            window.addEventListener('load', () => setTimeout(() => window.print(), 400));
+        }
+    </script>
 </body>
 </html>

@@ -1,6 +1,9 @@
 <?php $pageTitle = 'Reportes'; require dirname(__DIR__, 2) . '/layouts/admin_header.php'; ?>
 
-<div class="page-header"><div class="breadcrumb">Informes y libro de ventas SAR</div></div>
+<div class="page-header">
+    <div class="breadcrumb">Informes y libro de ventas SAR</div>
+    <a href="<?= url('/admin/reportes/avanzados') ?>" class="btn-admin">📊 Reportes avanzados</a>
+</div>
 
 <form method="get" class="filters">
     <div class="form-group" style="margin:0;"><label style="display:block;font-size:.78rem;margin-bottom:4px;">Desde</label><input type="date" name="from" value="<?= e($from) ?>"></div>

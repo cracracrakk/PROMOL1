@@ -44,6 +44,19 @@ require dirname(__DIR__, 2) . '/layouts/admin_header.php';
             <p><strong>Total gastado:</strong> <?= money($totalSpent) ?></p>
             <p><strong>Visitas:</strong> <?= count($appointments) ?></p>
         </div>
+
+        <?php $wallet = Database::fetch('SELECT * FROM customer_wallets WHERE customer_id = ?', [$customer['id']]); ?>
+        <div class="card" style="background:linear-gradient(135deg,var(--accent),#a88a52);color:#fff;">
+            <h3 style="color:#fff;">💳 Saldo del cliente</h3>
+            <p style="font-size:2rem;font-family:'Playfair Display',serif;margin:10px 0;"><?= money($wallet['balance'] ?? 0) ?></p>
+            <form method="post" action="<?= url('/admin/wallet/recargar') ?>">
+                <?= csrf_field() ?>
+                <input type="hidden" name="customer_id" value="<?= $customer['id'] ?>">
+                <input type="number" name="amount" step="0.01" placeholder="Importe a recargar" style="background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);color:#fff;padding:8px;border-radius:6px;width:100%;margin-bottom:8px;">
+                <input type="text" name="reason" placeholder="Motivo (opcional)" style="background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);color:#fff;padding:8px;border-radius:6px;width:100%;margin-bottom:8px;">
+                <button type="submit" class="btn-admin" style="background:#fff;color:var(--accent);width:100%;">+ Recargar saldo</button>
+            </form>
+        </div>
     </div>
 
     <div>

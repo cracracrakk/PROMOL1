@@ -138,6 +138,21 @@ class InvoiceController {
         view('admin/facturas/print', compact('invoice','items'));
     }
 
+    /**
+     * Descarga como HTML servible que el navegador puede convertir a PDF.
+     * Para PDF binario nativo se requiere mPDF/FPDF; este endpoint optimiza
+     * el HTML para "Guardar como PDF" del navegador.
+     */
+    public function download($id): void {
+        $invoice = Database::fetch('SELECT * FROM invoices WHERE id = ?', [(int)$id]);
+        if (!$invoice) { flash('error','Documento no encontrado.'); redirect('/admin/facturas'); }
+        $items = Database::fetchAll('SELECT * FROM invoice_items WHERE invoice_id = ?', [(int)$id]);
+        // Header de descarga
+        header('Content-Type: text/html; charset=utf-8');
+        header('Content-Disposition: inline; filename="factura-' . $invoice['number'] . '.html"');
+        view('admin/facturas/print', compact('invoice','items'));
+    }
+
     public function updateStatus($id): void {
         csrf_verify();
         $status = $_POST['status'] ?? 'pagada';

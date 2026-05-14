@@ -3,7 +3,8 @@
 <div class="page-header">
     <div><div class="breadcrumb"><a href="<?= url('/admin/facturas') ?>">← Facturas</a></div></div>
     <div style="display:flex;gap:8px;">
-        <a href="<?= url('/admin/facturas/'.$invoice['id'].'/imprimir') ?>" target="_blank" class="btn-admin btn-outline">Imprimir / PDF</a>
+        <a href="<?= url('/admin/facturas/'.$invoice['id'].'/imprimir') ?>" target="_blank" class="btn-admin btn-outline">Imprimir</a>
+        <a href="<?= url('/admin/facturas/'.$invoice['id'].'/imprimir?auto=1') ?>" target="_blank" class="btn-admin">📄 Guardar PDF</a>
         <?php if ($invoice['status'] !== 'anulada'): ?>
             <form method="post" action="<?= url('/admin/facturas/'.$invoice['id'].'/estado') ?>" data-confirm="¿Anular este documento?" style="display:inline;">
                 <?= csrf_field() ?>

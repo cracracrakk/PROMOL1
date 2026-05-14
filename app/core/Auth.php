@@ -86,12 +86,23 @@ class Auth {
 
     public static function role(): ?string { return $_SESSION['user']['role'] ?? null; }
 
+    public const SESSION_TIMEOUT = 1800; // 30 min inactividad
+
     public static function requireLogin(): void {
         if (!self::check()) {
             $_SESSION['flash_error'] = 'Debes iniciar sesión.';
             header('Location: /login');
             exit;
         }
+        // Logout automático por inactividad
+        $last = $_SESSION['last_activity'] ?? time();
+        if ((time() - $last) > self::SESSION_TIMEOUT) {
+            self::logout();
+            $_SESSION['flash_error'] = 'Tu sesión ha expirado por inactividad.';
+            header('Location: /login');
+            exit;
+        }
+        $_SESSION['last_activity'] = time();
     }
 
     public static function requireRole(array $roles): void {

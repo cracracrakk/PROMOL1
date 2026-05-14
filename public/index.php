@@ -133,9 +133,62 @@ $router->get('/admin/pos', 'PosController@index');
 $router->get ('/admin/caja',        'CashController@index');
 $router->post('/admin/caja/cierre', 'CashController@close');
 
-// ----- Reportes -----
+// ----- Reportes básicos -----
 $router->get('/admin/reportes',     'ReportController@index');
 $router->get('/admin/reportes/sar', 'ReportController@exportSar');
+
+// ----- Reportes avanzados -----
+$router->get('/admin/reportes/avanzados', 'AdvancedReportsController@index');
+$router->get('/admin/reportes/heatmap',   'AdvancedReportsController@heatmap');
+$router->get('/admin/reportes/retencion', 'AdvancedReportsController@retention');
+$router->get('/admin/reportes/en-riesgo', 'AdvancedReportsController@atRisk');
+$router->get('/admin/reportes/forecast',  'AdvancedReportsController@forecast');
+$router->get('/admin/reportes/terapeutas','AdvancedReportsController@therapists');
+
+// ----- Catálogos -----
+$router->get ('/admin/catalogos/cabinas',                    'CatalogController@rooms');
+$router->post('/admin/catalogos/cabinas/guardar',            'CatalogController@roomSave');
+$router->post('/admin/catalogos/cabinas/{id}/eliminar',      'CatalogController@roomDelete');
+$router->get ('/admin/catalogos/proveedores',                'CatalogController@suppliers');
+$router->post('/admin/catalogos/proveedores/guardar',        'CatalogController@supplierSave');
+$router->post('/admin/catalogos/proveedores/{id}/eliminar',  'CatalogController@supplierDelete');
+$router->get ('/admin/catalogos/categorias-servicios',       'CatalogController@serviceCategories');
+$router->post('/admin/catalogos/categorias-servicios/guardar','CatalogController@serviceCategorySave');
+$router->get ('/admin/catalogos/categorias-productos',       'CatalogController@productCategories');
+$router->post('/admin/catalogos/categorias-productos/guardar','CatalogController@productCategorySave');
+$router->get ('/admin/catalogos/testimonios',                'CatalogController@testimonials');
+$router->post('/admin/catalogos/testimonios/guardar',        'CatalogController@testimonialSave');
+$router->post('/admin/catalogos/testimonios/{id}/eliminar',  'CatalogController@testimonialDelete');
+$router->get ('/admin/catalogos/galeria',                    'CatalogController@gallery');
+$router->post('/admin/catalogos/galeria/subir',              'CatalogController@galleryUpload');
+$router->post('/admin/catalogos/galeria/{id}/eliminar',      'CatalogController@galleryDelete');
+$router->get ('/admin/catalogos/mensajes',                   'CatalogController@messages');
+$router->post('/admin/catalogos/mensajes/{id}/eliminar',     'CatalogController@messageDelete');
+$router->get ('/admin/catalogos/promos',                     'CatalogController@promos');
+$router->post('/admin/catalogos/promos/guardar',             'CatalogController@promoSave');
+$router->post('/admin/catalogos/promos/{id}/eliminar',       'CatalogController@promoDelete');
+
+// ----- Newsletter -----
+$router->get ('/admin/newsletter',         'NewsletterController@index');
+$router->post('/admin/newsletter/enviar',  'NewsletterController@send');
+
+// ----- Wallet -----
+$router->post('/admin/wallet/recargar',    'WalletController@topup');
+
+// ----- Import / Export -----
+$router->get ('/admin/import-export',                       'ImportExportController@index');
+$router->get ('/admin/import-export/clientes/exportar',     'ImportExportController@exportCustomers');
+$router->post('/admin/import-export/clientes/importar',     'ImportExportController@importCustomers');
+$router->get ('/admin/import-export/productos/exportar',    'ImportExportController@exportProducts');
+$router->post('/admin/import-export/productos/importar',    'ImportExportController@importProducts');
+
+// ----- Facturas PDF descarga -----
+$router->get ('/admin/facturas/{id}/descargar', 'InvoiceController@download');
+
+// ----- Sucursales -----
+$router->get ('/admin/sistema/sucursales',                  'BranchController@index');
+$router->post('/admin/sistema/sucursales/guardar',          'BranchController@save');
+$router->post('/admin/sistema/sucursales/{id}/eliminar',    'BranchController@delete');
 
 // ----- Sistema (solo admin) -----
 $router->get ('/admin/sistema',                       'SystemController@index');
