@@ -36,6 +36,8 @@ $router->get('/contacto',  'HomeController@contact');
 $router->post('/contacto', 'HomeController@submitContact');
 $router->get('/reservar',  'HomeController@booking');
 $router->post('/reservar', 'HomeController@submitBooking');
+$router->get('/regalo',    'HomeController@giftCard');
+$router->post('/regalo',   'HomeController@submitGiftCard');
 
 // ----- Autenticación -----
 $router->get('/login',  'AuthController@showLogin');
