@@ -17,10 +17,10 @@ INSERT INTO site_settings (`key`, `value`) VALUES
 -- Usuarios (contraseña: admin123 -> hash bcrypt generado)
 -- password: admin123
 INSERT INTO users (name, email, password, role, phone, color) VALUES
-('Administrador', 'admin@spa.local',  '$2y$10$N7v9bIhrJ.D5kYnLk5l7Pe1J0xLqQ4HFvKxOQUUaR4Yz5xQGsXk2u', 'admin',      '+34 600 100 001', '#6b8a7a'),
-('María Recepción', 'maria@spa.local','$2y$10$N7v9bIhrJ.D5kYnLk5l7Pe1J0xLqQ4HFvKxOQUUaR4Yz5xQGsXk2u', 'recepcion',  '+34 600 100 002', '#c9a96e'),
-('Laura Terapeuta', 'laura@spa.local','$2y$10$N7v9bIhrJ.D5kYnLk5l7Pe1J0xLqQ4HFvKxOQUUaR4Yz5xQGsXk2u', 'terapeuta',  '+34 600 100 003', '#a87aaf'),
-('Carmen Terapeuta','carmen@spa.local','$2y$10$N7v9bIhrJ.D5kYnLk5l7Pe1J0xLqQ4HFvKxOQUUaR4Yz5xQGsXk2u', 'terapeuta',  '+34 600 100 004', '#6f9bbf');
+('Administrador', 'admin@spa.local',  '$2y$12$hKTLI796CYpuEpwpfnY8nez7IwNGX/ru3HSMzQCTahOKGSObjcXdy', 'admin',      '+34 600 100 001', '#6b8a7a'),
+('María Recepción', 'maria@spa.local','$2y$12$hKTLI796CYpuEpwpfnY8nez7IwNGX/ru3HSMzQCTahOKGSObjcXdy', 'recepcion',  '+34 600 100 002', '#c9a96e'),
+('Laura Terapeuta', 'laura@spa.local','$2y$12$hKTLI796CYpuEpwpfnY8nez7IwNGX/ru3HSMzQCTahOKGSObjcXdy', 'terapeuta',  '+34 600 100 003', '#a87aaf'),
+('Carmen Terapeuta','carmen@spa.local','$2y$12$hKTLI796CYpuEpwpfnY8nez7IwNGX/ru3HSMzQCTahOKGSObjcXdy', 'terapeuta',  '+34 600 100 004', '#6f9bbf');
 
 -- Categorías de servicios
 INSERT INTO service_categories (name, slug, description, icon, sort_order) VALUES
@@ -128,3 +128,10 @@ INSERT INTO gallery (image, caption, sort_order) VALUES
 INSERT INTO promo_codes (code, description, discount_type, discount_value, valid_until, max_uses, active) VALUES
 ('BIENVENIDA10', '10% de descuento para nuevos clientes',  'percent', 10.00, '2026-12-31', 100, 1),
 ('VERANO20',     '20% en tratamientos corporales',         'percent', 20.00, '2026-09-30',  50, 1);
+
+-- Autorización CAI de ejemplo (configurable desde el módulo Sistema)
+INSERT INTO sar_authorizations (document_type, cai, resolucion, establecimiento, punto_emision, tipo_documento, rango_inicial, rango_final, next_number, fecha_limite, active) VALUES
+('factura',      'A1B2C3-D4E5F6-G7H8I9-J0K1L2-M3N4O5-P6Q7R8-S9T0', 'DEI-SAR-2024-001234', '000', '001', '01', 1, 10000, 1, '2026-12-31', 1),
+('nota_credito', 'NC1234-567890-ABCDEF-GHIJKL-MNOPQR-STUVWX-YZAB',  'DEI-SAR-2024-001235', '000', '001', '04', 1,  1000, 1, '2026-12-31', 1),
+('nota_debito',  'ND9876-543210-FEDCBA-LKJIHG-RQPONM-XWVUTS-BAZY',  'DEI-SAR-2024-001236', '000', '001', '05', 1,  1000, 1, '2026-12-31', 1),
+('recibo',       'RC1111-222233-334444-555566-667777-788888-9999',  'DEI-SAR-2024-001237', '000', '001', '06', 1,  5000, 1, '2026-12-31', 1);
