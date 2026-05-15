@@ -1,0 +1,15 @@
+{
+  "name": "DentalCore",
+  "short_name": "DentalCore",
+  "description": "Sistema de gestión para clínicas dentales",
+  "start_url": "/admin",
+  "display": "standalone",
+  "background_color": "#0ea5e9",
+  "theme_color": "#0ea5e9",
+  "orientation": "portrait-primary",
+  "icons": [
+    { "src": "/assets/img/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ],
+  "categories": ["medical", "productivity", "business"],
+  "lang": "es"
+}

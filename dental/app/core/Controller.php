@@ -7,12 +7,13 @@ abstract class Controller
         $data['_title'] = $data['_title'] ?? cfg('app.name');
 
         if ($layout === null) {
-            $layout = str_starts_with($template, 'admin/') || str_starts_with($template, 'auth/')
-                ? null
-                : 'public';
-            if (str_starts_with($template, 'admin/')) $layout = 'admin';
-            if (str_starts_with($template, 'landing/')) $layout = 'public';
-            if (str_starts_with($template, 'auth/'))    $layout = null; // auth tiene su propio diseño
+            $layout = match (true) {
+                str_starts_with($template, 'admin/')   => 'admin',
+                str_starts_with($template, 'landing/') => 'public',
+                str_starts_with($template, 'portal/')  => 'portal',
+                str_starts_with($template, 'public/')  => 'public',
+                default => null,
+            };
         }
 
         $file = dirname(__DIR__) . '/views/' . $template . '.php';

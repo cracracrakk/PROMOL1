@@ -7,9 +7,12 @@ $mh = $patient['medical_history'] ?? [];
         <h1><?= e($patient['first_name'].' '.$patient['last_name']) ?></h1>
         <p class="subtitle">Ficha <?= e($patient['code']) ?> · <?= e(age_from($patient['birth_date']) ?: '—') ?> años</p>
     </div>
-    <div class="flex gap-1">
-        <a href="<?= url('/admin/pacientes/'.$patient['id'].'/odontograma') ?>" class="btn btn-primary">Odontograma</a>
+    <div class="flex gap-1 flex-wrap">
+        <a href="<?= url('/admin/pacientes/'.$patient['id'].'/odontograma') ?>" class="btn btn-primary">🦷 Odontograma</a>
+        <a href="<?= url('/admin/pacientes/'.$patient['id'].'/periodontograma') ?>" class="btn">Periodontograma</a>
         <a href="<?= url('/admin/pacientes/'.$patient['id'].'/historia') ?>" class="btn">Historia clínica</a>
+        <a href="<?= url('/admin/pacientes/'.$patient['id'].'/documentos') ?>" class="btn">📁 Documentos</a>
+        <a href="<?= url('/admin/pacientes/'.$patient['id'].'/recetas') ?>" class="btn">℞ Recetas</a>
         <a href="<?= url('/admin/citas/nueva?patient_id='.$patient['id']) ?>" class="btn">+ Cita</a>
         <a href="<?= url('/admin/facturas/nueva?patient_id='.$patient['id']) ?>" class="btn">+ Factura</a>
         <a href="<?= url('/admin/pacientes/'.$patient['id'].'/editar') ?>" class="btn">Editar</a>

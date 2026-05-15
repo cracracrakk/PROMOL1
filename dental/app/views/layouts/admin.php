@@ -12,8 +12,12 @@ $active = function (string $start) use ($path) {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="csrf-token" content="<?= e(csrf_token()) ?>">
+<meta name="theme-color" content="<?= e(setting('clinic_color_primary', '#0ea5e9')) ?>">
+<link rel="manifest" href="<?= url('/manifest.json') ?>">
+<link rel="icon" type="image/svg+xml" href="<?= url('/assets/img/icon.svg') ?>">
 <title><?= e($_title) ?> — <?= e(setting('clinic_name', 'DentalCore')) ?></title>
 <link rel="stylesheet" href="<?= url('/assets/css/app.css') ?>">
+<style>:root { --primary: <?= e(setting('clinic_color_primary', '#0ea5e9')) ?>; --accent: <?= e(setting('clinic_color_accent', '#06b6d4')) ?>; }</style>
 </head>
 <body>
 <div class="app">
@@ -27,10 +31,21 @@ $active = function (string $start) use ($path) {
             <a href="<?= url('/admin') ?>"           class="<?= $path === '/admin' || $path === '/admin/dashboard' ? 'active' : '' ?>"><span class="nav-ico">▤</span> Dashboard</a>
             <a href="<?= url('/admin/citas') ?>"     class="<?= $active('/admin/citas') ?>"><span class="nav-ico">▦</span> Agenda</a>
             <a href="<?= url('/admin/pacientes') ?>" class="<?= $active('/admin/pacientes') ?>"><span class="nav-ico">☺</span> Pacientes</a>
-            <div class="nav-section">Facturación</div>
-            <a href="<?= url('/admin/facturas') ?>"  class="<?= $active('/admin/facturas') ?>"><span class="nav-ico">▭</span> Facturas</a>
+            <a href="<?= url('/admin/tareas') ?>"    class="<?= $active('/admin/tareas') ?>"><span class="nav-ico">✓</span> Tareas</a>
+
+            <div class="nav-section">Finanzas</div>
+            <a href="<?= url('/admin/facturas') ?>" class="<?= $active('/admin/facturas') ?>"><span class="nav-ico">▭</span> Facturas</a>
+            <a href="<?= url('/admin/caja') ?>"     class="<?= $active('/admin/caja') ?>"><span class="nav-ico">$</span> Caja diaria</a>
+            <a href="<?= url('/admin/reportes') ?>" class="<?= $active('/admin/reportes') ?>"><span class="nav-ico">▩</span> Reportes</a>
+
             <div class="nav-section">Catálogos</div>
             <a href="<?= url('/admin/tratamientos') ?>" class="<?= $active('/admin/tratamientos') ?>"><span class="nav-ico">＋</span> Tratamientos</a>
+            <a href="<?= url('/admin/inventario') ?>"   class="<?= $active('/admin/inventario') ?>"><span class="nav-ico">▣</span> Inventario</a>
+
+            <?php if (($_user['role'] ?? '') === 'admin'): ?>
+            <div class="nav-section">Administración</div>
+            <a href="<?= url('/admin/configuracion') ?>" class="<?= $active('/admin/configuracion') ?>"><span class="nav-ico">⚙</span> Configuración</a>
+            <?php endif; ?>
         </nav>
     </aside>
 

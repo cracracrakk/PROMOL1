@@ -28,6 +28,7 @@ require $base . '/app/core/Auth.php';
 require $base . '/app/core/Validator.php';
 require $base . '/app/core/Controller.php';
 require $base . '/app/core/Router.php';
+require $base . '/app/core/Mail.php';
 
 // Autoload modelos
 spl_autoload_register(function ($cls) use ($base) {
@@ -46,10 +47,30 @@ $r->get ('/precios',       'HomeController@pricing');
 $r->get ('/contacto',      'HomeController@contact');
 $r->post('/contacto',      'HomeController@submitContact');
 
+// ---- Setup wizard (primera vez) ----
+$r->get ('/setup',         'SetupController@welcome');
+$r->post('/setup',         'SetupController@save');
+
 // ---- Auth ----
 $r->get ('/login',  'AuthController@showLogin');
 $r->post('/login',  'AuthController@login');
 $r->get ('/logout', 'AuthController@logout');
+
+// ---- Portal del paciente (magic-link) ----
+$r->get ('/mi-cuenta',                  'PortalController@login');
+$r->post('/mi-cuenta/acceso',           'PortalController@sendMagicLink');
+$r->get ('/mi-cuenta/acceso/{token}',   'PortalController@authenticate');
+$r->get ('/mi-cuenta/inicio',           'PortalController@dashboard');
+$r->get ('/mi-cuenta/citas',            'PortalController@appointments');
+$r->get ('/mi-cuenta/tratamientos',     'PortalController@treatments');
+$r->get ('/mi-cuenta/facturas',         'PortalController@invoices');
+$r->get ('/mi-cuenta/salir',            'PortalController@logout');
+
+// ---- Confirmación pública de cita por token ----
+$r->get ('/cita/confirmar/{token}', 'PublicAppointmentController@confirm');
+$r->get ('/cita/cancelar/{token}',  'PublicAppointmentController@cancel');
+$r->get ('/cita/encuesta/{token}',  'PublicAppointmentController@survey');
+$r->post('/cita/encuesta/{token}',  'PublicAppointmentController@submitSurvey');
 
 // ---- Panel ----
 $r->get('/admin',           'DashboardController@index');
@@ -97,6 +118,62 @@ $r->post('/admin/facturas/{id}/estado',    'InvoiceController@updateStatus');
 // Pagos
 $r->post('/admin/facturas/{id}/pago',      'PaymentController@store');
 $r->post('/admin/pagos/{id}/eliminar',     'PaymentController@destroy');
+
+// Periodontograma
+$r->get ('/admin/pacientes/{id}/periodontograma',         'PeriodontogramController@index');
+$r->get ('/admin/pacientes/{id}/periodontograma/nuevo',   'PeriodontogramController@create');
+$r->post('/admin/pacientes/{id}/periodontograma/nuevo',   'PeriodontogramController@store');
+$r->get ('/admin/periodontograma/{id}',                    'PeriodontogramController@show');
+$r->post('/admin/periodontograma/{id}/tooth',              'PeriodontogramController@updateTooth');
+
+// Documentos / rayos X / fotos
+$r->get ('/admin/pacientes/{id}/documentos',         'DocumentController@index');
+$r->post('/admin/pacientes/{id}/documentos/subir',   'DocumentController@upload');
+$r->post('/admin/documentos/{id}/eliminar',          'DocumentController@destroy');
+$r->get ('/admin/documentos/{id}/ver',               'DocumentController@view');
+
+// Recetas
+$r->get ('/admin/pacientes/{id}/recetas',         'PrescriptionController@index');
+$r->get ('/admin/pacientes/{id}/recetas/nueva',   'PrescriptionController@create');
+$r->post('/admin/pacientes/{id}/recetas/nueva',   'PrescriptionController@store');
+$r->get ('/admin/recetas/{id}',                    'PrescriptionController@show');
+$r->get ('/admin/recetas/{id}/imprimir',           'PrescriptionController@printable');
+
+// Caja diaria
+$r->get ('/admin/caja',              'CashController@index');
+$r->post('/admin/caja/abrir',        'CashController@open');
+$r->post('/admin/caja/cerrar',       'CashController@close');
+$r->get ('/admin/caja/{id}',         'CashController@show');
+$r->post('/admin/gastos/nuevo',      'CashController@storeExpense');
+
+// Reportes
+$r->get ('/admin/reportes',                  'ReportController@index');
+$r->get ('/admin/reportes/ingresos',         'ReportController@revenue');
+$r->get ('/admin/reportes/odontologos',      'ReportController@byDentist');
+$r->get ('/admin/reportes/tratamientos',     'ReportController@treatments');
+$r->get ('/admin/reportes/cobranza',         'ReportController@ageing');
+$r->get ('/admin/reportes/retencion',        'ReportController@retention');
+$r->get ('/admin/reportes/recall',           'ReportController@recall');
+
+// Inventario
+$r->get ('/admin/inventario',                   'InventoryController@index');
+$r->get ('/admin/inventario/nuevo',             'InventoryController@form');
+$r->post('/admin/inventario/nuevo',             'InventoryController@save');
+$r->get ('/admin/inventario/{id}/editar',       'InventoryController@form');
+$r->post('/admin/inventario/{id}/editar',       'InventoryController@save');
+$r->post('/admin/inventario/{id}/movimiento',   'InventoryController@move');
+
+// Tareas
+$r->get ('/admin/tareas',                'TaskController@index');
+$r->post('/admin/tareas/nueva',          'TaskController@store');
+$r->post('/admin/tareas/{id}/estado',    'TaskController@updateStatus');
+$r->post('/admin/tareas/{id}/eliminar',  'TaskController@destroy');
+
+// Configuración / branding
+$r->get ('/admin/configuracion',          'SettingsController@index');
+$r->post('/admin/configuracion/guardar',  'SettingsController@save');
+$r->get ('/admin/configuracion/usuarios', 'SettingsController@users');
+$r->post('/admin/configuracion/usuarios', 'SettingsController@userSave');
 
 // ---- API JSON ----
 $r->get ('/api/patients',                  'PatientController@apiList');

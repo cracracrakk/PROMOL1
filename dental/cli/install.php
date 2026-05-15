@@ -35,6 +35,11 @@ echo "OK\n";
 echo "Importando seed.sql... ";
 $sql = file_get_contents(__DIR__ . '/../database/seed.sql');
 $pdo->exec($sql);
+echo "OK\n";
+
+echo "Importando schema_v2.sql (extensiones)... ";
+$sql = file_get_contents(__DIR__ . '/../database/schema_v2.sql');
+$pdo->exec($sql);
 echo "OK\n\n";
 
 echo "Listo. Accede al sistema con:\n";

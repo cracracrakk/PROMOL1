@@ -1,5 +1,12 @@
 // DentalCore - JS principal
 
+// Service worker (PWA)
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(() => {});
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     // Confirmaciones para formularios destructivos
     document.querySelectorAll('form[data-confirm]').forEach(form => {
