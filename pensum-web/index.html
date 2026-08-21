@@ -1,0 +1,825 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Plan de estudio de Ingeniería en Computación (UTH): descartá las clases que ya cursaste y mirá cuánto te falta.">
+<meta name="theme-color" content="#1B7A46">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Mi Pensum">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-192.png" type="image/png">
+<link rel="manifest" href="manifest.webmanifest">
+</head>
+<body>
+<title>Mi Pensum UTH</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+
+<style>
+:root{
+  --ground:#F3F5F1; --surface:#FFFFFF; --surface-2:#E9EDE6; --line:#DBE0D6;
+  --ink:#141A16; --ink-2:#4B564E; --ink-3:#7E887F;
+  --verde:#1B7A46; --verde-ink:#146038; --verde-soft:#E2EFE7;
+  --oro:#B98A0E; --oro-soft:#F6ECD2;
+  --rojo:#B3372F; --ambar:#9A6512; --ambar-soft:#F7EBD6;
+  --a-exactas:#D8801F; --a-desarrollo:#B79412; --a-redes:#2F7FC4;
+  --a-humanas:#7C5EC4; --a-electronica:#2F9459; --a-idiomas:#1E958E; --a-practica:#1B7A46;
+  --shadow:0 1px 2px rgba(20,26,22,.05), 0 8px 24px -12px rgba(20,26,22,.18);
+  --r:14px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0E1210; --surface:#171D19; --surface-2:#202721; --line:#2B332D;
+    --ink:#E9EEE9; --ink-2:#A5B0A7; --ink-3:#78837A;
+    --verde:#57C285; --verde-ink:#7BD3A0; --verde-soft:#16291F;
+    --oro:#E0B855; --oro-soft:#2A2314;
+    --rojo:#E2766C; --ambar:#DDA65A; --ambar-soft:#2B2213;
+    --a-exactas:#E9A253; --a-desarrollo:#D9BC45; --a-redes:#63A8E6;
+    --a-humanas:#A98BE0; --a-electronica:#5CBE84; --a-idiomas:#4DBDB5; --a-practica:#57C285;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -14px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0E1210; --surface:#171D19; --surface-2:#202721; --line:#2B332D;
+  --ink:#E9EEE9; --ink-2:#A5B0A7; --ink-3:#78837A;
+  --verde:#57C285; --verde-ink:#7BD3A0; --verde-soft:#16291F;
+  --oro:#E0B855; --oro-soft:#2A2314;
+  --rojo:#E2766C; --ambar:#DDA65A; --ambar-soft:#2B2213;
+  --a-exactas:#E9A253; --a-desarrollo:#D9BC45; --a-redes:#63A8E6;
+  --a-humanas:#A98BE0; --a-electronica:#5CBE84; --a-idiomas:#4DBDB5; --a-practica:#57C285;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -14px rgba(0,0,0,.7);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:15px; line-height:1.45;
+  -webkit-font-smoothing:antialiased; -webkit-tap-highlight-color:transparent;
+}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+:focus-visible{outline:2px solid var(--verde);outline-offset:2px;border-radius:6px}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.cond{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif}
+
+/* ── barra superior ───────────────────────────────── */
+.topbar{
+  position:sticky; top:0; z-index:30; background:var(--ground); background:color-mix(in srgb,var(--ground) 88%,transparent);
+  backdrop-filter:saturate(1.6) blur(12px); border-bottom:1px solid var(--line);
+  padding:calc(env(safe-area-inset-top) + 10px) 16px 10px;
+}
+.topbar-in{max-width:760px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.brand{font-family:"IBM Plex Sans Condensed",sans-serif;font-weight:700;font-size:17px;letter-spacing:.01em}
+.topbar .pct{margin-left:auto;font-weight:600;font-size:13px;color:var(--verde-ink)}
+.railtrack{height:3px;background:var(--surface-2);border-radius:99px;overflow:hidden;margin-top:9px}
+.railfill{height:100%;background:var(--verde);border-radius:99px;transition:width .45s cubic-bezier(.22,1,.36,1)}
+
+/* ── layout ───────────────────────────────────────── */
+main{max-width:760px;margin:0 auto;padding:16px 16px 108px}
+.view[hidden]{display:none}
+section+section{margin-top:14px}
+
+/* ── tarjeta de avance ────────────────────────────── */
+.hero{
+  background:linear-gradient(148deg,var(--verde) 0%,var(--verde-ink) 100%);
+  border-radius:var(--r); padding:18px; display:flex; gap:16px; align-items:center;
+  color:#fff; box-shadow:var(--shadow);
+}
+.hero .eyebrow{
+  font-family:"IBM Plex Sans Condensed",sans-serif;font-size:10.5px;font-weight:600;
+  letter-spacing:.13em;text-transform:uppercase;color:rgba(255,255,255,.72)
+}
+.hero h1{margin:2px 0 6px;font-size:19px;font-weight:700;line-height:1.2;text-wrap:balance}
+.hero .uvtext{font-size:13.5px;color:rgba(255,255,255,.94);font-weight:500}
+.hero .sub{font-size:12px;color:rgba(255,255,255,.7);margin-top:2px}
+.ring{flex:0 0 auto;position:relative;width:76px;height:76px}
+.ring svg{transform:rotate(-90deg);display:block}
+.ring .val{
+  position:absolute;inset:0;display:grid;place-items:center;
+  font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:17px;font-variant-numeric:tabular-nums
+}
+
+/* ── filtros ──────────────────────────────────────── */
+.tools{display:flex;flex-direction:column;gap:9px;margin-top:14px}
+.search{
+  display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);
+  border-radius:11px;padding:9px 12px
+}
+.search input{
+  border:0;background:none;outline:none;font:inherit;color:var(--ink);width:100%;
+}
+.search input::placeholder{color:var(--ink-3)}
+.chips{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.chips::-webkit-scrollbar{display:none}
+.chip{
+  flex:0 0 auto;border:1px solid var(--line);background:var(--surface);color:var(--ink-2);
+  padding:6px 12px;border-radius:99px;font-size:13px;font-weight:500;white-space:nowrap;
+  transition:background .15s,color .15s,border-color .15s
+}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--ground);border-color:var(--ink)}
+
+/* ── período ──────────────────────────────────────── */
+.periodo{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow)}
+.periodo+.periodo{margin-top:11px}
+.phead{display:flex;align-items:center;gap:10px;padding:11px 13px;width:100%;text-align:left}
+.phead .num{
+  font-family:"IBM Plex Sans Condensed",sans-serif;font-weight:700;font-size:14.5px;letter-spacing:.02em
+}
+.phead .count{margin-left:auto;font-size:12px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.pbar{width:44px;height:4px;background:var(--surface-2);border-radius:99px;overflow:hidden;flex:0 0 auto}
+.pbar i{display:block;height:100%;background:var(--verde);transition:width .35s}
+.periodo.done .phead .num{color:var(--verde-ink)}
+.markall{
+  flex:0 0 auto;width:30px;height:30px;display:grid;place-items:center;border-radius:9px;
+  color:var(--ink-3);border:1px solid transparent
+}
+.markall:hover{background:var(--surface-2);color:var(--ink)}
+.periodo.done .markall{color:var(--verde)}
+.clases{border-top:1px solid var(--line)}
+
+/* ── fila de clase ────────────────────────────────── */
+.clase{display:flex;align-items:stretch;gap:0;border-bottom:1px solid var(--line)}
+.clase:last-child{border-bottom:0}
+.tick{
+  flex:0 0 auto;padding:12px 10px 12px 13px;display:flex;align-items:center;
+}
+.dot{
+  width:25px;height:25px;border-radius:50%;border:2px solid var(--ink-3);
+  display:grid;place-items:center;transition:background .18s,border-color .18s,transform .18s
+}
+.dot svg{opacity:0;transform:scale(.6);transition:opacity .18s,transform .18s}
+.clase.hecha .dot{background:var(--verde);border-color:var(--verde)}
+.clase.hecha .dot svg{opacity:1;transform:scale(1);color:#fff}
+:root[data-theme="dark"] .clase.hecha .dot svg,
+.clase.hecha .dot svg{color:#fff}
+.clase.cursando .dot{border-color:var(--oro);background:var(--oro-soft)}
+.clase.cursando .dot::after{content:"";width:9px;height:9px;border-radius:50%;background:var(--oro)}
+.tick:active .dot{transform:scale(.86)}
+.stripe{flex:0 0 3px;border-radius:99px;margin:12px 0}
+.info{flex:1 1 auto;min-width:0;padding:11px 13px 11px 10px;text-align:left;display:block}
+.code{
+  font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:600;letter-spacing:.03em;
+  color:var(--ink-3);display:flex;align-items:center;gap:5px
+}
+.flag{width:6px;height:6px;border-radius:50%;flex:0 0 auto}
+.flag.inv{background:var(--rojo)}
+.nombre{display:block;font-size:14.5px;font-weight:500;margin-top:1px;color:var(--ink)}
+.clase.hecha .nombre{text-decoration:line-through;text-decoration-color:var(--ink-3);color:var(--ink-3);font-weight:400}
+.clase.hecha .code{opacity:.65}
+.lock{
+  display:inline-flex;align-items:center;gap:4px;margin-top:4px;font-size:11px;font-weight:500;
+  color:var(--ambar);background:var(--ambar-soft);padding:2px 7px;border-radius:99px
+}
+.cred{
+  flex:0 0 auto;padding:12px 13px 12px 6px;display:flex;flex-direction:column;align-items:flex-end;justify-content:center
+}
+.cred b{font-family:"IBM Plex Mono",monospace;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums}
+.cred span{font-size:8.5px;font-weight:600;letter-spacing:.09em;color:var(--ink-3)}
+
+/* ── vacío ────────────────────────────────────────── */
+.empty{grid-column:1/-1;text-align:center;padding:48px 24px;color:var(--ink-3)}
+.empty strong{display:block;color:var(--ink-2);font-size:15.5px;margin-bottom:4px}
+.empty p{margin:0;font-size:13.5px;max-width:34ch;margin-inline:auto}
+
+/* ── resumen ──────────────────────────────────────── */
+.tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:13px}
+.tile .k{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.tile .v{font-family:"IBM Plex Mono",monospace;font-size:23px;font-weight:600;margin-top:3px;font-variant-numeric:tabular-nums}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:15px;box-shadow:var(--shadow)}
+h2.sec{
+  font-family:"IBM Plex Sans Condensed",sans-serif;font-size:11px;font-weight:600;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--ink-3);margin:20px 0 9px
+}
+.brow{display:flex;align-items:center;gap:10px;padding:6px 0}
+.brow .lbl{font-size:13px;flex:0 0 auto;width:106px}
+.brow .track{flex:1 1 auto;height:6px;background:var(--surface-2);border-radius:99px;overflow:hidden}
+.brow .track i{display:block;height:100%;border-radius:99px;transition:width .4s}
+.brow .n{font-size:11.5px;color:var(--ink-3);flex:0 0 auto;width:52px;text-align:right;font-variant-numeric:tabular-nums}
+.legend{display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--ink-2)}
+.legend div{display:flex;align-items:flex-start;gap:8px}
+.note{font-size:12.5px;color:var(--ink-3);line-height:1.5}
+.actions{display:flex;flex-direction:column;gap:9px;margin-top:20px}
+.btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border-radius:11px;
+  font-weight:600;font-size:14.5px;border:1px solid var(--line);background:var(--surface)
+}
+.btn.prim{background:var(--verde);border-color:var(--verde);color:#fff}
+.btn.danger{color:var(--rojo)}
+
+/* ── navegación inferior ──────────────────────────── */
+nav{
+  position:fixed;left:0;right:0;bottom:0;z-index:30;
+  background:var(--ground); background:color-mix(in srgb,var(--ground) 90%,transparent);
+  backdrop-filter:saturate(1.6) blur(12px);border-top:1px solid var(--line);
+  padding:6px 8px calc(env(safe-area-inset-bottom) + 6px);
+}
+.nav-in{max-width:760px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.tab{
+  display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;border-radius:10px;
+  color:var(--ink-3);font-size:10.5px;font-weight:600;letter-spacing:.01em
+}
+.tab[aria-selected="true"]{color:var(--verde-ink)}
+.tab .badge{
+  position:absolute;transform:translate(13px,-4px);background:var(--oro);color:#1b1400;
+  font-size:9px;font-weight:700;border-radius:99px;padding:0 4px;line-height:14px;min-width:14px;text-align:center
+}
+
+/* ── hoja de detalle ──────────────────────────────── */
+.scrim{position:fixed;inset:0;background:rgba(10,14,11,.45);z-index:40;opacity:0;pointer-events:none;transition:opacity .25s}
+.scrim.open{opacity:1;pointer-events:auto}
+.sheet{
+  position:fixed;left:0;right:0;bottom:0;z-index:41;background:var(--surface);
+  border-radius:18px 18px 0 0;box-shadow:0 -8px 40px -12px rgba(0,0,0,.4);
+  padding:8px 18px calc(env(safe-area-inset-bottom) + 20px);
+  max-height:86vh;overflow-y:auto;transform:translateY(101%);transition:transform .3s cubic-bezier(.22,1,.36,1);
+  max-width:760px;margin:0 auto
+}
+.sheet.open{transform:translateY(0)}
+.grip{width:38px;height:4px;border-radius:99px;background:var(--line);margin:6px auto 14px}
+.sheet .code{font-size:11.5px;margin-bottom:2px}
+.sheet h3{margin:0 0 10px;font-size:19px;font-weight:700;line-height:1.25;text-wrap:balance}
+.pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.pill{font-size:11.5px;font-weight:600;padding:4px 9px;border-radius:99px;background:var(--surface-2);color:var(--ink-2)}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;background:var(--surface-2);padding:3px;border-radius:11px;margin-bottom:16px}
+.seg button{padding:8px;border-radius:9px;font-size:13.5px;font-weight:600;color:var(--ink-2)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.sheet h4{
+  font-family:"IBM Plex Sans Condensed",sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--ink-3);margin:16px 0 7px
+}
+.link{display:flex;align-items:center;gap:9px;padding:7px 0;font-size:13.5px}
+.link .st{flex:0 0 auto;color:var(--ink-3)}
+.link.ok .st{color:var(--verde)}
+.link small{display:block;color:var(--ink-3);font-size:11px;font-family:"IBM Plex Mono",monospace}
+.toast{
+  position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 78px);transform:translate(-50%,14px);
+  background:var(--ink);color:var(--ground);font-size:13px;font-weight:500;padding:9px 16px;border-radius:99px;
+  z-index:50;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+@media (min-width:880px){
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:11px;align-items:start}
+  .grid2 .periodo+.periodo{margin-top:0}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition-duration:.01ms !important;animation-duration:.01ms !important}
+}
+</style>
+
+<div class="topbar">
+  <div class="topbar-in">
+    <span class="brand">Mi Pensum</span>
+    <span class="pct" id="topPct">0%</span>
+  </div>
+  <div class="topbar-in"><div class="railtrack" style="flex:1"><div class="railfill" id="topRail" style="width:0%"></div></div></div>
+</div>
+
+<main>
+  <!-- ══ PENSUM ══ -->
+  <div class="view" id="view-pensum">
+    <div class="hero">
+      <div class="ring">
+        <svg width="76" height="76" viewBox="0 0 76 76" aria-hidden="true">
+          <circle cx="38" cy="38" r="32" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="7"></circle>
+          <circle id="ringArc" cx="38" cy="38" r="32" fill="none" stroke="#EFC64B" stroke-width="7"
+                  stroke-linecap="round" stroke-dasharray="201.06" stroke-dashoffset="201.06"
+                  style="transition:stroke-dashoffset .6s cubic-bezier(.22,1,.36,1)"></circle>
+        </svg>
+        <div class="val" id="ringVal">0%</div>
+      </div>
+      <div style="min-width:0">
+        <div class="eyebrow">UTH · Plan de estudio 2021</div>
+        <h1>Ingeniería en Computación</h1>
+        <div class="uvtext" id="heroUv">0 de 214 UV descartadas</div>
+        <div class="sub" id="heroSub">0 clases listas · 56 por llevar</div>
+      </div>
+    </div>
+
+    <div class="tools">
+      <label class="search">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="color:var(--ink-3);flex:0 0 auto" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="q" type="search" placeholder="Buscar clase o código" autocomplete="off" aria-label="Buscar clase o código">
+      </label>
+      <div class="chips" role="group" aria-label="Filtrar por estado">
+        <button class="chip" data-filtro="todas" aria-pressed="true">Todas</button>
+        <button class="chip" data-filtro="pendiente" aria-pressed="false">Pendientes</button>
+        <button class="chip" data-filtro="cursando" aria-pressed="false">Cursando</button>
+        <button class="chip" data-filtro="descartada" aria-pressed="false">Descartadas</button>
+      </div>
+    </div>
+
+    <div id="periodos" class="grid2" style="margin-top:13px"></div>
+
+    <p class="note" style="margin-top:16px">
+      <strong style="color:var(--ink-2)">XII Período —</strong> para cursar la Práctica Profesional
+      Supervisada debés haber cursado las 2 pasantías y estar llevando las dos últimas clases,
+      o haber cursado todo el plan.
+    </p>
+  </div>
+
+  <!-- ══ PUEDO LLEVAR ══ -->
+  <div class="view" id="view-libres" hidden>
+    <h2 class="sec" style="margin-top:4px">Listo para matricular</h2>
+    <p class="note" id="libresIntro" style="margin-bottom:12px"></p>
+    <div id="libres"></div>
+  </div>
+
+  <!-- ══ RESUMEN ══ -->
+  <div class="view" id="view-resumen" hidden>
+    <h2 class="sec" style="margin-top:4px">De un vistazo</h2>
+    <div class="tiles" id="tiles"></div>
+
+    <h2 class="sec">Avance por período</h2>
+    <div class="card" id="barPeriodos"></div>
+
+    <h2 class="sec">Avance por área</h2>
+    <div class="card" id="barAreas"></div>
+
+    <h2 class="sec">Simbología del plan</h2>
+    <div class="card legend">
+      <div><span class="flag inv" style="margin-top:6px"></span><span>Punto rojo — componente de investigación</span></div>
+      <div><span style="color:var(--verde);font-size:11px;margin-top:2px">&#9733;</span><span>Estrella verde — componente de vinculación</span></div>
+      <div><span style="color:var(--ink-3);margin-top:1px">&#9679;</span><span>Al terminar Ingeniería de Software II cursás la Pasantía Profesional Supervisada I (80 hrs); al terminar Redes IV, la Pasantía II.</span></div>
+    </div>
+
+    <div class="actions">
+      <button class="btn prim" id="btnShare">Compartir mi avance</button>
+      <button class="btn danger" id="btnReset">Reiniciar todo el pensum</button>
+    </div>
+
+    <p class="note" style="margin-top:18px">
+      Códigos, nombres, UV y períodos salen del mapa curricular del brochure de la UTH.
+      Las prelaciones son las cadenas visibles del diagrama: confirmalas con tu coordinación
+      académica antes de matricular.
+    </p>
+  </div>
+</main>
+
+<nav>
+  <div class="nav-in" role="tablist">
+    <button class="tab" role="tab" data-view="pensum" aria-selected="true">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M4 5h16M4 12h16M4 19h16"/></svg>
+      Pensum
+    </button>
+    <button class="tab" role="tab" data-view="libres" aria-selected="false">
+      <span style="position:relative;display:block">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M4.5 12.5 9 17l10.5-10.5"/></svg>
+        <span class="badge" id="badgeLibres" hidden>0</span>
+      </span>
+      Puedo llevar
+    </button>
+    <button class="tab" role="tab" data-view="resumen" aria-selected="false">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M5 20V10M12 20V4M19 20v-6"/></svg>
+      Resumen
+    </button>
+  </div>
+</nav>
+
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Detalle de la clase"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+
+/* ───────── Plan de estudio: Ingeniería en Computación, UTH (brochure 2021) ─────────
+   c=código, n=nombre, uv, p=período, a=área, r=requisitos, f=marcas
+   f: i=investigación, v=vinculación, 1=pasantía I, 2=pasantía II          */
+const AREAS = {
+  exactas:{n:"Exactas",c:"var(--a-exactas)"}, desarrollo:{n:"Desarrollo",c:"var(--a-desarrollo)"},
+  redes:{n:"Redes y telecom.",c:"var(--a-redes)"}, humanas:{n:"Habilidades humanas",c:"var(--a-humanas)"},
+  electronica:{n:"Electrónica",c:"var(--a-electronica)"}, idiomas:{n:"Idiomas",c:"var(--a-idiomas)"},
+  practica:{n:"Práctica profesional",c:"var(--a-practica)"}
+};
+
+const CURSOS = [
+  {c:"MAE-0501",n:"Matemática I",uv:4,p:1,a:"exactas",r:[]},
+  {c:"ADE-0901",n:"Administración I",uv:4,p:1,a:"humanas",r:[]},
+  {c:"IIC-0600",n:"Introducción a la Ingeniería Computacional",uv:4,p:1,a:"desarrollo",r:[]},
+  {c:"ESG-9201",n:"Español I",uv:3,p:1,a:"humanas",r:[]},
+  {c:"ADE-0601",n:"Análisis y Diseño de Algoritmos",uv:4,p:1,a:"desarrollo",r:[]},
+
+  {c:"GTE-0513",n:"Geometría y Trigonometría",uv:4,p:2,a:"exactas",r:["MAE-0501"]},
+  {c:"CCE-0801",n:"Contabilidad General",uv:4,p:2,a:"humanas",r:["ADE-0901"]},
+  {c:"HHG-0401",n:"Historia de Honduras",uv:3,p:2,a:"humanas",r:[]},
+  {c:"SCG-0303",n:"Sociología",uv:4,p:2,a:"humanas",r:[]},
+  {c:"PEE-0603",n:"Programación Estructurada",uv:4,p:2,a:"desarrollo",r:["ADE-0601"]},
+
+  {c:"MAE-0514",n:"Pre Cálculo",uv:4,p:3,a:"exactas",r:["GTE-0513"]},
+  {c:"INE-0204",n:"Inglés I",uv:3,p:3,a:"idiomas",r:[]},
+  {c:"EDE-0605",n:"Estructura de Datos",uv:4,p:3,a:"desarrollo",r:["PEE-0603"]},
+  {c:"FIG-0301",n:"Filosofía",uv:4,p:3,a:"humanas",r:[]},
+  {c:"POE-0604",n:"Programación Orientada a Objetos",uv:4,p:3,a:"desarrollo",r:["PEE-0603"]},
+
+  {c:"CAE-0504",n:"Cálculo I",uv:4,p:4,a:"exactas",r:["MAE-0514"]},
+  {c:"INE-0205",n:"Inglés II",uv:3,p:4,a:"idiomas",r:["INE-0204"]},
+  {c:"SOE-0608",n:"Sistemas Operativos I",uv:4,p:4,a:"redes",r:["EDE-0605"]},
+  {c:"BDE-0606",n:"Base de Datos I",uv:4,p:4,a:"desarrollo",r:["EDE-0605"]},
+  {c:"PAE-0606",n:"Programación Avanzada I",uv:4,p:4,a:"desarrollo",r:["POE-0604"]},
+
+  {c:"ALE-0511",n:"Álgebra Lineal",uv:4,p:5,a:"exactas",r:["CAE-0504"]},
+  {c:"CAE-0505",n:"Cálculo II",uv:4,p:5,a:"exactas",r:["CAE-0504"]},
+  {c:"SOE-0610",n:"Sistemas Operativos II",uv:4,p:5,a:"redes",r:["SOE-0608"]},
+  {c:"BDE-0609",n:"Base de Datos II",uv:4,p:5,a:"desarrollo",r:["BDE-0606"]},
+  {c:"PAE-0607",n:"Programación Avanzada II",uv:4,p:5,a:"desarrollo",r:["PAE-0606"],f:"v"},
+
+  {c:"FIE-1901",n:"Física I",uv:4,p:6,a:"exactas",r:["ALE-0511"]},
+  {c:"EDE-0512",n:"Ecuaciones Diferenciales",uv:4,p:6,a:"exactas",r:["CAE-0505"]},
+  {c:"RCE-0613",n:"Redes I",uv:4,p:6,a:"redes",r:["SOE-0610"]},
+  {c:"PWE-0604",n:"Programación Web I",uv:4,p:6,a:"desarrollo",r:["BDE-0609"]},
+  {c:"ISE-0614",n:"Ingeniería de Software I",uv:4,p:6,a:"desarrollo",r:["PAE-0607"]},
+
+  {c:"FIE-1902",n:"Física II",uv:4,p:7,a:"exactas",r:["FIE-1901"]},
+  {c:"RMH-0603",n:"Reparación y Mantenimiento de Hardware y Software",uv:4,p:7,a:"electronica",r:["EDE-0512"]},
+  {c:"RCE-0614",n:"Redes II",uv:4,p:7,a:"redes",r:["RCE-0613"]},
+  {c:"PWE-0606",n:"Programación Web II",uv:4,p:7,a:"desarrollo",r:["PWE-0604"],f:"v"},
+  {c:"ISE-0617",n:"Ingeniería de Software II",uv:4,p:7,a:"desarrollo",r:["ISE-0614"],f:"i1"},
+
+  {c:"ETE-0507",n:"Estadística I",uv:4,p:8,a:"exactas",r:["FIE-1902"]},
+  {c:"ACE-0623",n:"Arquitectura de Computadoras",uv:4,p:8,a:"electronica",r:["RMH-0603"]},
+  {c:"RCE-0615",n:"Redes III",uv:4,p:8,a:"redes",r:["RCE-0614"]},
+  {c:"PTI-0620",n:"Computación en la Nube",uv:4,p:8,a:"redes",r:["PWE-0606"]},
+  {c:"PMO-0602",n:"Programación Móvil I",uv:4,p:8,a:"desarrollo",r:["ISE-0617"]},
+
+  {c:"PEM-0610",n:"Programación Embebida",uv:4,p:9,a:"electronica",r:["ETE-0507"]},
+  {c:"E-I",n:"Electiva I",uv:3,p:9,a:"humanas",r:[]},
+  {c:"RCE-0618",n:"Redes IV",uv:4,p:9,a:"redes",r:["RCE-0615"],f:"i2"},
+  {c:"CGV-0601",n:"Computación Gráfica y Visual",uv:4,p:9,a:"desarrollo",r:["PTI-0620"]},
+  {c:"PMO-0604",n:"Programación Móvil II",uv:4,p:9,a:"desarrollo",r:["PMO-0602"],f:"v"},
+
+  {c:"IAE-0611",n:"Inteligencia Artificial",uv:4,p:10,a:"desarrollo",r:["PEM-0610"],f:"i"},
+  {c:"E-II",n:"Electiva II",uv:3,p:10,a:"humanas",r:["E-I"]},
+  {c:"IOT-0607",n:"Internet de las Cosas (IOT)",uv:4,p:10,a:"electronica",r:["RCE-0618"],f:"i"},
+  {c:"ARE-0807",n:"Automatización y Robótica Industrial",uv:4,p:10,a:"electronica",r:["CGV-0601"]},
+  {c:"PSA-0603",n:"Programación para Sistemas Abiertos I",uv:4,p:10,a:"desarrollo",r:["PMO-0604"],f:"v"},
+
+  {c:"OCE-0620",n:"Organización de Centros de Cómputo",uv:4,p:11,a:"humanas",r:["IAE-0611"]},
+  {c:"SIP-0620",n:"Telefonía y Seguridad IP",uv:4,p:11,a:"redes",r:["E-II"],f:"i"},
+  {c:"ASE-0619",n:"Auditoría y Seguridad de Sistemas",uv:4,p:11,a:"redes",r:["IOT-0607"]},
+  {c:"E-III",n:"Electiva III (Inteligencia de Negocios)",uv:4,p:11,a:"humanas",r:["ARE-0807"]},
+  {c:"PSA-0605",n:"Programación para Sistemas Abiertos II",uv:4,p:11,a:"desarrollo",r:["PSA-0603"],f:"v"},
+
+  {c:"PPS-1223",n:"Práctica Profesional Supervisada",uv:0,p:12,a:"practica",r:["ISE-0617","RCE-0618"]}
+];
+
+const ROMANO = ["","I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII"];
+const PERIODOS = [...new Set(CURSOS.map(c => c.p))].sort((a,b) => a-b);
+const PORCODIGO = Object.fromEntries(CURSOS.map(c => [c.c, c]));
+const UV_TOTAL = CURSOS.reduce((s,c) => s + c.uv, 0);
+const CLAVE = "pensum.uth.v1";
+const ETIQ = { todas:"Todas", pendiente:"Pendientes", cursando:"Cursando", descartada:"Descartadas" };
+
+/* ───────── estado ───────── */
+let estados = {};
+try {
+  const raw = localStorage.getItem(CLAVE);
+  if (raw) estados = JSON.parse(raw) || {};
+} catch (e) { estados = {}; }
+
+function guardar(){
+  try { localStorage.setItem(CLAVE, JSON.stringify(estados)); } catch (e) {}
+}
+
+let filtro = "todas";
+let busqueda = "";
+let vista = "pensum";
+let colapsados = new Set();
+
+const est = c => estados[c.c] || "pendiente";
+const hecha = c => est(c) === "descartada";
+const faltantes = c => c.r.map(x => PORCODIGO[x]).filter(x => x && !hecha(x));
+const bloqueada = c => !hecha(c) && faltantes(c).length > 0;
+const habilita = c => CURSOS.filter(x => x.r.includes(c.c));
+const libres = () => CURSOS.filter(c => est(c) === "pendiente" && faltantes(c).length === 0);
+
+function fijar(c, nuevo){
+  if (nuevo === "pendiente") delete estados[c.c]; else estados[c.c] = nuevo;
+  guardar(); render();
+}
+function alternar(c){ fijar(c, hecha(c) ? "pendiente" : "descartada"); }
+
+function avance(lista){
+  let uvOk = 0, uvT = 0, ok = 0, cur = 0;
+  for (const c of lista){
+    uvT += c.uv;
+    if (est(c) === "descartada"){ uvOk += c.uv; ok++; }
+    else if (est(c) === "cursando") cur++;
+  }
+  return { uvOk, uvT, ok, cur, total: lista.length, pend: lista.length - ok,
+           frac: uvT ? uvOk / uvT : 0 };
+}
+const delPeriodo = p => CURSOS.filter(c => c.p === p);
+
+function visible(c){
+  if (filtro !== "todas" && est(c) !== filtro) return false;
+  const q = busqueda.trim().toLowerCase();
+  if (!q) return true;
+  return c.n.toLowerCase().includes(q) || c.c.toLowerCase().includes(q);
+}
+
+/* ───────── utilidades de render ───────── */
+const esc = s => String(s).replace(/[&<>"']/g, m =>
+  ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+
+const CHECK = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5 9.5 17.5 19.5 6.5"/></svg>';
+const LOCK = '<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><rect x="4" y="10.5" width="16" height="11" rx="2.5"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></svg>';
+
+function filaHTML(c){
+  const e = est(c);
+  const cls = e === "descartada" ? "hecha" : (e === "cursando" ? "cursando" : "");
+  const flags = (c.f || "");
+  let marcas = "";
+  if (flags.includes("i")) marcas += '<span class="flag inv" title="Componente de investigación"></span>';
+  if (flags.includes("v")) marcas += '<span style="color:var(--verde);font-size:9px;line-height:1" title="Componente de vinculación">&#9733;</span>';
+  const falta = bloqueada(c) ? faltantes(c)[0] : null;
+  return `<div class="clase ${cls}" data-c="${c.c}">
+    <button class="tick" data-act="toggle" aria-pressed="${e === "descartada"}"
+            aria-label="${e === "descartada" ? "Restaurar" : "Descartar"} ${esc(c.n)}">
+      <span class="dot">${CHECK}</span>
+    </button>
+    <span class="stripe" style="background:${AREAS[c.a].c}"></span>
+    <button class="info" data-act="detalle" aria-label="Ver detalle de ${esc(c.n)}">
+      <span class="code">${esc(c.c)}${marcas}</span>
+      <span class="nombre">${esc(c.n)}</span>
+      ${falta ? `<span class="lock">${LOCK} Falta ${esc(falta.c)}</span>` : ""}
+    </button>
+    ${c.uv ? `<span class="cred"><b>${c.uv}</b><span>UV</span></span>` : '<span class="cred"></span>'}
+  </div>`;
+}
+
+function renderPensum(){
+  const cont = document.getElementById("periodos");
+  let html = "", algo = false;
+
+  for (const p of PERIODOS){
+    const todos = delPeriodo(p);
+    const mostrados = todos.filter(visible);
+    if (!mostrados.length) continue;
+    algo = true;
+    const a = avance(todos);
+    const listo = a.ok === a.total;
+    const cerrado = colapsados.has(p);
+    html += `<div class="periodo ${listo ? "done" : ""}">
+      <div class="phead">
+        <button data-per="${p}" data-act="colapsar" style="display:flex;align-items:center;gap:8px;flex:1 1 auto;text-align:left"
+                aria-expanded="${!cerrado}">
+          <span class="num">${ROMANO[p]} Período</span>
+          <span class="pbar"><i style="width:${a.total ? a.ok / a.total * 100 : 0}%"></i></span>
+          <span class="count">${a.ok}/${a.total}</span>
+        </button>
+        <button class="markall" data-per="${p}" data-act="todo"
+                aria-label="${listo ? "Restaurar" : "Descartar"} el ${ROMANO[p]} período">${CHECK}</button>
+      </div>
+      ${cerrado ? "" : `<div class="clases">${mostrados.map(filaHTML).join("")}</div>`}
+    </div>`;
+  }
+
+  cont.innerHTML = algo ? html : `<div class="empty">
+      <strong>Ninguna clase acá</strong>
+      <p>No hay clases que coincidan con ${busqueda ? `«${esc(busqueda)}»` : `el filtro <b>${esc(ETIQ[filtro])}</b>`}.</p>
+    </div>`;
+}
+
+function renderLibres(){
+  const l = libres();
+  const cont = document.getElementById("libres");
+  const intro = document.getElementById("libresIntro");
+  const badge = document.getElementById("badgeLibres");
+
+  badge.hidden = l.length === 0;
+  badge.textContent = l.length;
+
+  if (!l.length){
+    intro.textContent = "";
+    cont.innerHTML = `<div class="empty">
+      <strong>Nada disponible todavía</strong>
+      <p>Descartá las clases que ya cursaste y acá aparece lo que podés matricular.</p>
+    </div>`;
+    return;
+  }
+  intro.textContent = `${l.length} ${l.length === 1 ? "clase tiene" : "clases tienen"} todos sus requisitos descartados.`;
+
+  let html = "";
+  for (const p of PERIODOS){
+    const g = l.filter(c => c.p === p);
+    if (!g.length) continue;
+    html += `<div class="periodo">
+      <div class="phead"><span class="num">${ROMANO[p]} Período</span>
+        <span class="count">${g.length} ${g.length === 1 ? "clase" : "clases"}</span></div>
+      <div class="clases">${g.map(filaHTML).join("")}</div>
+    </div>`;
+  }
+  cont.innerHTML = html;
+}
+
+function barra(lbl, ok, total, color){
+  const pc = total ? ok / total * 100 : 0;
+  return `<div class="brow">
+    <span class="lbl">${esc(lbl)}</span>
+    <span class="track"><i style="width:${pc}%;background:${color}"></i></span>
+    <span class="n">${ok}/${total}</span>
+  </div>`;
+}
+
+function renderResumen(){
+  const a = avance(CURSOS);
+  const completos = PERIODOS.filter(p => { const x = avance(delPeriodo(p)); return x.ok === x.total; }).length;
+
+  document.getElementById("tiles").innerHTML = [
+    ["Clases listas", a.ok, "var(--verde-ink)"],
+    ["Por llevar", a.pend, "var(--ink)"],
+    ["UV pendientes", a.uvT - a.uvOk, "var(--ink)"],
+    ["Períodos completos", `${completos}/${PERIODOS.length}`, "var(--verde-ink)"]
+  ].map(([k, v, c]) => `<div class="tile"><div class="k">${k}</div><div class="v" style="color:${c}">${v}</div></div>`).join("");
+
+  document.getElementById("barPeriodos").innerHTML = PERIODOS.map(p => {
+    const x = avance(delPeriodo(p));
+    return barra(`${ROMANO[p]} Período`, x.ok, x.total, "var(--verde)");
+  }).join("");
+
+  document.getElementById("barAreas").innerHTML = Object.entries(AREAS).map(([k, v]) => {
+    const x = avance(CURSOS.filter(c => c.a === k));
+    return x.total ? barra(v.n, x.ok, x.total, v.c) : "";
+  }).join("");
+}
+
+function renderTop(){
+  const a = avance(CURSOS);
+  const pc = Math.round(a.frac * 100);
+  document.getElementById("topPct").textContent = pc + "%";
+  document.getElementById("topRail").style.width = pc + "%";
+  document.getElementById("ringVal").textContent = pc + "%";
+  document.getElementById("ringArc").style.strokeDashoffset = String(201.06 * (1 - a.frac));
+  document.getElementById("heroUv").textContent = `${a.uvOk} de ${a.uvT} UV descartadas`;
+  document.getElementById("heroSub").textContent =
+    `${a.ok} ${a.ok === 1 ? "clase lista" : "clases listas"} · ${a.pend} por llevar` +
+    (a.cur ? ` · ${a.cur} cursando` : "");
+}
+
+function render(){
+  renderTop();
+  if (vista === "pensum") renderPensum();
+  renderLibres();
+  if (vista === "resumen") renderResumen();
+}
+
+/* ───────── hoja de detalle ───────── */
+const sheet = document.getElementById("sheet");
+const scrim = document.getElementById("scrim");
+let abierto = null;
+
+function abrirDetalle(c){
+  abierto = c;
+  const e = est(c);
+  const notas = [];
+  const f = c.f || "";
+  if (f.includes("i")) notas.push("Componente de investigación");
+  if (f.includes("v")) notas.push("Componente de vinculación");
+  if (f.includes("1")) notas.push("Al finalizarla cursás la Pasantía Profesional Supervisada I (80 hrs)");
+  if (f.includes("2")) notas.push("Al finalizarla cursás la Pasantía Profesional Supervisada II (80 hrs)");
+
+  const enlace = (x) => `<div class="link ${hecha(x) ? "ok" : ""}">
+      <span class="st">${hecha(x) ? CHECK : "&#9675;"}</span>
+      <span>${esc(x.n)}<small>${esc(x.c)} · ${ROMANO[x.p]} Período</small></span>
+    </div>`;
+
+  const sigs = habilita(c);
+  sheet.innerHTML = `<div class="grip"></div>
+    <div class="code">${esc(c.c)}</div>
+    <h3>${esc(c.n)}</h3>
+    <div class="pills">
+      <span class="pill">${ROMANO[c.p]} Período</span>
+      ${c.uv ? `<span class="pill">${c.uv} UV</span>` : ""}
+      <span class="pill" style="color:${AREAS[c.a].c}">${AREAS[c.a].n}</span>
+    </div>
+    <div class="seg" role="group" aria-label="Estado de la clase">
+      <button data-set="pendiente"  aria-pressed="${e === "pendiente"}">Pendiente</button>
+      <button data-set="cursando"   aria-pressed="${e === "cursando"}">Cursando</button>
+      <button data-set="descartada" aria-pressed="${e === "descartada"}">Descartada</button>
+    </div>
+    ${c.r.length ? `<h4>Requisitos</h4>${c.r.map(x => PORCODIGO[x]).filter(Boolean).map(enlace).join("")}` : ""}
+    ${sigs.length ? `<h4>Al descartarla habilitás</h4>${sigs.map(enlace).join("")}` : ""}
+    ${notas.length ? `<h4>Notas del plan</h4>${notas.map(t => `<div class="link"><span class="st">&#8226;</span><span>${esc(t)}</span></div>`).join("")}` : ""}
+    <button class="btn ${e === "descartada" ? "" : "prim"}" data-set="${e === "descartada" ? "pendiente" : "descartada"}" style="margin-top:18px;width:100%">
+      ${e === "descartada" ? "Restaurar clase" : "Descartar clase"}
+    </button>`;
+  sheet.classList.add("open");
+  scrim.classList.add("open");
+}
+
+function cerrarDetalle(){
+  sheet.classList.remove("open");
+  scrim.classList.remove("open");
+  abierto = null;
+}
+
+scrim.addEventListener("click", cerrarDetalle);
+document.addEventListener("keydown", e => { if (e.key === "Escape") cerrarDetalle(); });
+
+sheet.addEventListener("click", e => {
+  const b = e.target.closest("[data-set]");
+  if (!b || !abierto) return;
+  const c = abierto;
+  fijar(c, b.dataset.set);
+  if (b.classList.contains("btn")) cerrarDetalle(); else abrirDetalle(c);
+});
+
+/* ───────── interacción principal ───────── */
+document.querySelector("main").addEventListener("click", e => {
+  const per = e.target.closest("[data-per]");
+  if (per){
+    const p = Number(per.dataset.per);
+    if (per.dataset.act === "colapsar"){
+      colapsados.has(p) ? colapsados.delete(p) : colapsados.add(p);
+      render(); return;
+    }
+    const todos = delPeriodo(p);
+    const listo = todos.every(hecha);
+    todos.forEach(c => { if (listo) delete estados[c.c]; else estados[c.c] = "descartada"; });
+    guardar(); render();
+    aviso(listo ? `${ROMANO[p]} Período restaurado` : `${ROMANO[p]} Período descartado`);
+    return;
+  }
+  const fila = e.target.closest(".clase");
+  if (!fila) return;
+  const c = PORCODIGO[fila.dataset.c];
+  if (!c) return;
+  const act = e.target.closest("[data-act]");
+  if (act && act.dataset.act === "toggle") alternar(c);
+  else abrirDetalle(c);
+});
+
+document.querySelectorAll(".chip").forEach(chip => {
+  chip.addEventListener("click", () => {
+    filtro = chip.dataset.filtro;
+    document.querySelectorAll(".chip").forEach(x => x.setAttribute("aria-pressed", String(x === chip)));
+    render();
+  });
+});
+
+document.getElementById("q").addEventListener("input", e => {
+  busqueda = e.target.value; render();
+});
+
+document.querySelectorAll(".tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    vista = tab.dataset.view;
+    document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-selected", String(t === tab)));
+    document.querySelectorAll(".view").forEach(v => { v.hidden = v.id !== "view-" + vista; });
+    window.scrollTo({ top: 0, behavior: "instant" });
+    render();
+  });
+});
+
+/* ───────── acciones ───────── */
+const toast = document.getElementById("toast");
+let toastT;
+function aviso(msg){
+  toast.textContent = msg;
+  toast.classList.add("show");
+  clearTimeout(toastT);
+  toastT = setTimeout(() => toast.classList.remove("show"), 1900);
+}
+
+document.getElementById("btnReset").addEventListener("click", () => {
+  if (!confirm("¿Reiniciar el pensum? Todas las clases vuelven a pendiente.")) return;
+  estados = {}; guardar(); render(); aviso("Pensum reiniciado");
+});
+
+document.getElementById("btnShare").addEventListener("click", async () => {
+  const a = avance(CURSOS);
+  const lineas = [
+    "Ingeniería en Computación — UTH",
+    `Avance: ${Math.round(a.frac * 100)}% · ${a.uvOk}/${a.uvT} UV · ${a.ok}/${a.total} clases`,
+    ""
+  ];
+  for (const p of PERIODOS){
+    const g = delPeriodo(p).filter(hecha);
+    if (!g.length) continue;
+    lineas.push(`${ROMANO[p]} Período:`);
+    g.forEach(c => lineas.push(`  ✓ ${c.c} ${c.n}`));
+  }
+  const texto = lineas.join("\n");
+  try {
+    if (navigator.share) { await navigator.share({ title: "Mi Pensum", text: texto }); return; }
+    await navigator.clipboard.writeText(texto);
+    aviso("Resumen copiado");
+  } catch (e) { aviso("No se pudo compartir"); }
+});
+
+render();
+</script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
+}
+</script>
+</body>
+</html>

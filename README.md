@@ -219,8 +219,11 @@ Producto comercial. Cada licencia se vende por instalación / cliente.
 
 ---
 
-## 📱 App iOS: Mi Pensum
+## 📱 Mi Pensum
 
-En `ios/` vive un proyecto aparte, sin relación con el sistema de spa: una app nativa
-SwiftUI para llevar el plan de estudio de Ingeniería en Computación (UTH) y descartar
-las clases ya cursadas. Ver [`ios/README.md`](ios/README.md).
+Dos proyectos aparte, sin relación con el sistema de spa: una app para llevar el plan de
+estudio de Ingeniería en Computación (UTH) y descartar las clases ya cursadas.
+
+- [`ios/`](ios/README.md) — app nativa SwiftUI. Se abre y se compila en Xcode.
+- [`pensum-web/`](pensum-web/README.md) — la misma app en web, instalable en el iPhone
+  desde Safari con «Añadir a pantalla de inicio». No necesita Mac ni Xcode.

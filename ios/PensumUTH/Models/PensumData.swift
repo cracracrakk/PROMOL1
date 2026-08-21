@@ -137,7 +137,8 @@ enum PensumData {
                requisitos: ["PSA-0603"], flags: [.vinculacion]),
 
         // ─────────────────────── XII Período ─────────────────────────
-        Course("PPS-1223", "Práctica Profesional Supervisada", uv: 0, periodo: 12, area: .practica)
+        Course("PPS-1223", "Práctica Profesional Supervisada", uv: 0, periodo: 12, area: .practica,
+               requisitos: ["ISE-0617", "RCE-0618"])
     ]
 
     /// Nota del brochure sobre la Práctica Profesional Supervisada.

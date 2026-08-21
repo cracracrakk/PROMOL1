@@ -23,6 +23,12 @@ Detalles:
   componente de vinculación, y los avisos de Pasantía Profesional Supervisada I y II.
 - Todo se guarda en el dispositivo (`UserDefaults`), sin cuenta ni internet.
 
+## ¿No tenés Mac?
+
+Entonces esta versión no te sirve todavía: compilar un app de iOS solo se puede en macOS
+con Xcode. Usá [`pensum-web/`](../pensum-web/README.md) — es la misma app en web y se
+instala en la pantalla de inicio del iPhone desde Safari.
+
 ## Cómo abrirla
 
 ```bash
