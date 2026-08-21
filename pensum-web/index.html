@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Plan de estudio de Ingeniería en Computación (UTH): descartá las clases que ya cursaste y mirá cuánto te falta.">
+<meta name="description" content="Llevá el control de tu plan de estudio: marcá las clases aprobadas, las que estás cursando, repitiendo o retiraste, y en qué período las llevaste.">
 <meta name="theme-color" content="#1B7A46">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -25,9 +25,12 @@
   --ink:#141A16; --ink-2:#4B564E; --ink-3:#7E887F;
   --verde:#1B7A46; --verde-ink:#146038; --verde-soft:#E2EFE7;
   --oro:#B98A0E; --oro-soft:#F6ECD2;
+  --repite:#C4551F; --repite-soft:#FAE7DC;
+  --retira:#6C7A88; --retira-soft:#E7EBEE;
   --rojo:#B3372F; --ambar:#9A6512; --ambar-soft:#F7EBD6;
   --a-exactas:#D8801F; --a-desarrollo:#B79412; --a-redes:#2F7FC4;
   --a-humanas:#7C5EC4; --a-electronica:#2F9459; --a-idiomas:#1E958E; --a-practica:#1B7A46;
+  --hero-a:#1B7A46; --hero-b:#146038; --sobre-verde:#FFFFFF;
   --shadow:0 1px 2px rgba(20,26,22,.05), 0 8px 24px -12px rgba(20,26,22,.18);
   --r:14px;
 }
@@ -37,9 +40,12 @@
     --ink:#E9EEE9; --ink-2:#A5B0A7; --ink-3:#78837A;
     --verde:#57C285; --verde-ink:#7BD3A0; --verde-soft:#16291F;
     --oro:#E0B855; --oro-soft:#2A2314;
+    --repite:#E8875A; --repite-soft:#2E1D14;
+    --retira:#93A2B0; --retira-soft:#1C2228;
     --rojo:#E2766C; --ambar:#DDA65A; --ambar-soft:#2B2213;
     --a-exactas:#E9A253; --a-desarrollo:#D9BC45; --a-redes:#63A8E6;
     --a-humanas:#A98BE0; --a-electronica:#5CBE84; --a-idiomas:#4DBDB5; --a-practica:#57C285;
+    --hero-a:#1D7546; --hero-b:#0F4A2B; --sobre-verde:#08120C;
     --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -14px rgba(0,0,0,.7);
   }
 }
@@ -48,9 +54,12 @@
   --ink:#E9EEE9; --ink-2:#A5B0A7; --ink-3:#78837A;
   --verde:#57C285; --verde-ink:#7BD3A0; --verde-soft:#16291F;
   --oro:#E0B855; --oro-soft:#2A2314;
+  --repite:#E8875A; --repite-soft:#2E1D14;
+  --retira:#93A2B0; --retira-soft:#1C2228;
   --rojo:#E2766C; --ambar:#DDA65A; --ambar-soft:#2B2213;
   --a-exactas:#E9A253; --a-desarrollo:#D9BC45; --a-redes:#63A8E6;
   --a-humanas:#A98BE0; --a-electronica:#5CBE84; --a-idiomas:#4DBDB5; --a-practica:#57C285;
+  --hero-a:#1D7546; --hero-b:#0F4A2B; --sobre-verde:#08120C;
   --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -14px rgba(0,0,0,.7);
 }
 
@@ -61,31 +70,34 @@ body{
   font-size:15px; line-height:1.45;
   -webkit-font-smoothing:antialiased; -webkit-tap-highlight-color:transparent;
 }
-button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:left}
+input,select,textarea{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--verde);outline-offset:2px;border-radius:6px}
-.mono{font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
-.cond{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif}
 
 /* ── barra superior ───────────────────────────────── */
 .topbar{
-  position:sticky; top:0; z-index:30; background:var(--ground); background:color-mix(in srgb,var(--ground) 88%,transparent);
+  position:sticky; top:0; z-index:30; background:var(--ground);
+  background:color-mix(in srgb,var(--ground) 88%,transparent);
   backdrop-filter:saturate(1.6) blur(12px); border-bottom:1px solid var(--line);
   padding:calc(env(safe-area-inset-top) + 10px) 16px 10px;
 }
-.topbar-in{max-width:760px;margin:0 auto;display:flex;align-items:center;gap:12px}
-.brand{font-family:"IBM Plex Sans Condensed",sans-serif;font-weight:700;font-size:17px;letter-spacing:.01em}
-.topbar .pct{margin-left:auto;font-weight:600;font-size:13px;color:var(--verde-ink)}
-.railtrack{height:3px;background:var(--surface-2);border-radius:99px;overflow:hidden;margin-top:9px}
+.topbar-in{max-width:760px;margin:0 auto;display:flex;align-items:center;gap:10px}
+.planbtn{display:flex;align-items:center;gap:6px;min-width:0}
+.planbtn .nom{
+  font-family:"IBM Plex Sans Condensed",sans-serif;font-weight:700;font-size:17px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+}
+.planbtn svg{flex:0 0 auto;color:var(--ink-3)}
+.topbar .pct{margin-left:auto;font-weight:600;font-size:13px;color:var(--verde-ink);flex:0 0 auto}
+.railtrack{height:3px;background:var(--surface-2);border-radius:99px;overflow:hidden;margin-top:9px;flex:1}
 .railfill{height:100%;background:var(--verde);border-radius:99px;transition:width .45s cubic-bezier(.22,1,.36,1)}
 
-/* ── layout ───────────────────────────────────────── */
 main{max-width:760px;margin:0 auto;padding:16px 16px 108px}
 .view[hidden]{display:none}
-section+section{margin-top:14px}
 
 /* ── tarjeta de avance ────────────────────────────── */
 .hero{
-  background:linear-gradient(148deg,var(--verde) 0%,var(--verde-ink) 100%);
+  background:linear-gradient(148deg,var(--hero-a) 0%,var(--hero-b) 100%);
   border-radius:var(--r); padding:18px; display:flex; gap:16px; align-items:center;
   color:#fff; box-shadow:var(--shadow);
 }
@@ -109,9 +121,7 @@ section+section{margin-top:14px}
   display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);
   border-radius:11px;padding:9px 12px
 }
-.search input{
-  border:0;background:none;outline:none;font:inherit;color:var(--ink);width:100%;
-}
+.search input{border:0;background:none;outline:none;width:100%}
 .search input::placeholder{color:var(--ink-3)}
 .chips{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
 .chips::-webkit-scrollbar{display:none}
@@ -125,42 +135,31 @@ section+section{margin-top:14px}
 /* ── período ──────────────────────────────────────── */
 .periodo{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow)}
 .periodo+.periodo{margin-top:11px}
-.phead{display:flex;align-items:center;gap:10px;padding:11px 13px;width:100%;text-align:left}
-.phead .num{
-  font-family:"IBM Plex Sans Condensed",sans-serif;font-weight:700;font-size:14.5px;letter-spacing:.02em
-}
+.phead{display:flex;align-items:center;gap:10px;padding:11px 13px;width:100%}
+.phead .num{font-family:"IBM Plex Sans Condensed",sans-serif;font-weight:700;font-size:14.5px;letter-spacing:.02em}
 .phead .count{margin-left:auto;font-size:12px;color:var(--ink-3);font-variant-numeric:tabular-nums}
 .pbar{width:44px;height:4px;background:var(--surface-2);border-radius:99px;overflow:hidden;flex:0 0 auto}
 .pbar i{display:block;height:100%;background:var(--verde);transition:width .35s}
 .periodo.done .phead .num{color:var(--verde-ink)}
-.markall{
-  flex:0 0 auto;width:30px;height:30px;display:grid;place-items:center;border-radius:9px;
-  color:var(--ink-3);border:1px solid transparent
-}
+.markall{flex:0 0 auto;width:30px;height:30px;display:grid;place-items:center;border-radius:9px;color:var(--ink-3)}
 .markall:hover{background:var(--surface-2);color:var(--ink)}
 .periodo.done .markall{color:var(--verde)}
 .clases{border-top:1px solid var(--line)}
 
 /* ── fila de clase ────────────────────────────────── */
-.clase{display:flex;align-items:stretch;gap:0;border-bottom:1px solid var(--line)}
+.clase{display:flex;align-items:stretch;border-bottom:1px solid var(--line);width:100%}
 .clase:last-child{border-bottom:0}
-.tick{
-  flex:0 0 auto;padding:12px 10px 12px 13px;display:flex;align-items:center;
-}
+.tick{flex:0 0 auto;padding:12px 10px 12px 13px;display:flex;align-items:center;pointer-events:none}
 .dot{
   width:25px;height:25px;border-radius:50%;border:2px solid var(--ink-3);
-  display:grid;place-items:center;transition:background .18s,border-color .18s,transform .18s
+  display:grid;place-items:center;color:transparent;transition:background .18s,border-color .18s,color .18s
 }
-.dot svg{opacity:0;transform:scale(.6);transition:opacity .18s,transform .18s}
-.clase.hecha .dot{background:var(--verde);border-color:var(--verde)}
-.clase.hecha .dot svg{opacity:1;transform:scale(1);color:#fff}
-:root[data-theme="dark"] .clase.hecha .dot svg,
-.clase.hecha .dot svg{color:#fff}
-.clase.cursando .dot{border-color:var(--oro);background:var(--oro-soft)}
-.clase.cursando .dot::after{content:"";width:9px;height:9px;border-radius:50%;background:var(--oro)}
-.tick:active .dot{transform:scale(.86)}
+.clase[data-e="descartada"] .dot{background:var(--verde);border-color:var(--verde);color:var(--sobre-verde)}
+.clase[data-e="cursando"]   .dot{border-color:var(--oro);background:var(--oro-soft);color:var(--oro)}
+.clase[data-e="repitiendo"] .dot{border-color:var(--repite);background:var(--repite-soft);color:var(--repite)}
+.clase[data-e="retirada"]   .dot{border-color:var(--retira);background:var(--retira-soft);color:var(--retira);border-style:dashed}
 .stripe{flex:0 0 3px;border-radius:99px;margin:12px 0}
-.info{flex:1 1 auto;min-width:0;padding:11px 13px 11px 10px;text-align:left;display:block}
+.info{flex:1 1 auto;min-width:0;padding:11px 13px 11px 10px}
 .code{
   font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:600;letter-spacing:.03em;
   color:var(--ink-3);display:flex;align-items:center;gap:5px
@@ -168,29 +167,32 @@ section+section{margin-top:14px}
 .flag{width:6px;height:6px;border-radius:50%;flex:0 0 auto}
 .flag.inv{background:var(--rojo)}
 .nombre{display:block;font-size:14.5px;font-weight:500;margin-top:1px;color:var(--ink)}
-.clase.hecha .nombre{text-decoration:line-through;text-decoration-color:var(--ink-3);color:var(--ink-3);font-weight:400}
-.clase.hecha .code{opacity:.65}
-.lock{
-  display:inline-flex;align-items:center;gap:4px;margin-top:4px;font-size:11px;font-weight:500;
-  color:var(--ambar);background:var(--ambar-soft);padding:2px 7px;border-radius:99px
+.clase[data-e="descartada"] .nombre{text-decoration:line-through;text-decoration-color:var(--ink-3);color:var(--ink-3);font-weight:400}
+.clase[data-e="descartada"] .code{opacity:.65}
+.marca{
+  display:inline-flex;align-items:center;gap:4px;margin-top:5px;margin-right:5px;
+  font-size:11px;font-weight:600;padding:2px 8px;border-radius:99px
 }
-.cred{
-  flex:0 0 auto;padding:12px 13px 12px 6px;display:flex;flex-direction:column;align-items:flex-end;justify-content:center
-}
+.marca.lock{color:var(--ambar);background:var(--ambar-soft)}
+.marca.cursando{color:var(--oro);background:var(--oro-soft)}
+.marca.repitiendo{color:var(--repite);background:var(--repite-soft)}
+.marca.retirada{color:var(--retira);background:var(--retira-soft)}
+.marca.descartada{color:var(--verde-ink);background:var(--verde-soft)}
+.cred{flex:0 0 auto;padding:12px 13px 12px 6px;display:flex;flex-direction:column;align-items:flex-end;justify-content:center}
 .cred b{font-family:"IBM Plex Mono",monospace;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums}
 .cred span{font-size:8.5px;font-weight:600;letter-spacing:.09em;color:var(--ink-3)}
 
-/* ── vacío ────────────────────────────────────────── */
-.empty{grid-column:1/-1;text-align:center;padding:48px 24px;color:var(--ink-3)}
+.empty{grid-column:1/-1;text-align:center;padding:44px 24px;color:var(--ink-3)}
 .empty strong{display:block;color:var(--ink-2);font-size:15.5px;margin-bottom:4px}
-.empty p{margin:0;font-size:13.5px;max-width:34ch;margin-inline:auto}
+.empty p{margin:0 auto;font-size:13.5px;max-width:34ch}
 
-/* ── resumen ──────────────────────────────────────── */
+/* ── bloques de contenido ─────────────────────────── */
 .tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 .tile{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:13px}
 .tile .k{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
 .tile .v{font-family:"IBM Plex Mono",monospace;font-size:23px;font-weight:600;margin-top:3px;font-variant-numeric:tabular-nums}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:15px;box-shadow:var(--shadow)}
+.card.tight{padding:4px 15px}
 h2.sec{
   font-family:"IBM Plex Sans Condensed",sans-serif;font-size:11px;font-weight:600;letter-spacing:.13em;
   text-transform:uppercase;color:var(--ink-3);margin:20px 0 9px
@@ -203,63 +205,118 @@ h2.sec{
 .legend{display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--ink-2)}
 .legend div{display:flex;align-items:flex-start;gap:8px}
 .note{font-size:12.5px;color:var(--ink-3);line-height:1.5}
-.actions{display:flex;flex-direction:column;gap:9px;margin-top:20px}
+.actions{display:flex;flex-direction:column;gap:9px;margin-top:14px}
 .btn{
   display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border-radius:11px;
-  font-weight:600;font-size:14.5px;border:1px solid var(--line);background:var(--surface)
+  font-weight:600;font-size:14.5px;border:1px solid var(--line);background:var(--surface);width:100%
 }
-.btn.prim{background:var(--verde);border-color:var(--verde);color:#fff}
+.btn.prim{background:var(--verde);border-color:var(--verde);color:var(--sobre-verde)}
 .btn.danger{color:var(--rojo)}
+.btn.sm{padding:9px;font-size:13.5px}
+
+/* filas de ajustes / listas */
+.row{display:flex;align-items:center;gap:11px;padding:12px 0;border-bottom:1px solid var(--line);width:100%}
+.row:last-child{border-bottom:0}
+.row .txt{flex:1 1 auto;min-width:0}
+.row .txt b{display:block;font-size:14.5px;font-weight:600}
+.row .txt small{display:block;font-size:12px;color:var(--ink-3);margin-top:1px}
+.row .go{color:var(--ink-3);flex:0 0 auto}
+.radio{width:20px;height:20px;border-radius:50%;border:2px solid var(--line);flex:0 0 auto;display:grid;place-items:center}
+.radio.on{border-color:var(--verde)}
+.radio.on::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--verde)}
+.sw{width:44px;height:26px;border-radius:99px;background:var(--surface-2);position:relative;flex:0 0 auto;transition:background .2s}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .2s}
+.sw.on{background:var(--verde)}
+.sw.on::after{transform:translateX(18px)}
 
 /* ── navegación inferior ──────────────────────────── */
 nav{
-  position:fixed;left:0;right:0;bottom:0;z-index:30;
-  background:var(--ground); background:color-mix(in srgb,var(--ground) 90%,transparent);
+  position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--ground);
+  background:color-mix(in srgb,var(--ground) 90%,transparent);
   backdrop-filter:saturate(1.6) blur(12px);border-top:1px solid var(--line);
   padding:6px 8px calc(env(safe-area-inset-bottom) + 6px);
 }
-.nav-in{max-width:760px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.nav-in{max-width:760px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:2px}
 .tab{
   display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;border-radius:10px;
-  color:var(--ink-3);font-size:10.5px;font-weight:600;letter-spacing:.01em
+  color:var(--ink-3);font-size:10px;font-weight:600
 }
 .tab[aria-selected="true"]{color:var(--verde-ink)}
-.tab .badge{
+.badge{
   position:absolute;transform:translate(13px,-4px);background:var(--oro);color:#1b1400;
   font-size:9px;font-weight:700;border-radius:99px;padding:0 4px;line-height:14px;min-width:14px;text-align:center
 }
 
-/* ── hoja de detalle ──────────────────────────────── */
+/* ── hoja ─────────────────────────────────────────── */
 .scrim{position:fixed;inset:0;background:rgba(10,14,11,.45);z-index:40;opacity:0;pointer-events:none;transition:opacity .25s}
 .scrim.open{opacity:1;pointer-events:auto}
 .sheet{
   position:fixed;left:0;right:0;bottom:0;z-index:41;background:var(--surface);
   border-radius:18px 18px 0 0;box-shadow:0 -8px 40px -12px rgba(0,0,0,.4);
   padding:8px 18px calc(env(safe-area-inset-bottom) + 20px);
-  max-height:86vh;overflow-y:auto;transform:translateY(101%);transition:transform .3s cubic-bezier(.22,1,.36,1);
-  max-width:760px;margin:0 auto
+  max-height:88vh;overflow-y:auto;transform:translateY(101%);
+  transition:transform .3s cubic-bezier(.22,1,.36,1);max-width:760px;margin:0 auto
 }
 .sheet.open{transform:translateY(0)}
 .grip{width:38px;height:4px;border-radius:99px;background:var(--line);margin:6px auto 14px}
-.sheet .code{font-size:11.5px;margin-bottom:2px}
-.sheet h3{margin:0 0 10px;font-size:19px;font-weight:700;line-height:1.25;text-wrap:balance}
-.pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
-.pill{font-size:11.5px;font-weight:600;padding:4px 9px;border-radius:99px;background:var(--surface-2);color:var(--ink-2)}
-.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;background:var(--surface-2);padding:3px;border-radius:11px;margin-bottom:16px}
-.seg button{padding:8px;border-radius:9px;font-size:13.5px;font-weight:600;color:var(--ink-2)}
-.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.sheet h3{margin:0 0 4px;font-size:19px;font-weight:700;line-height:1.25;text-wrap:balance}
 .sheet h4{
   font-family:"IBM Plex Sans Condensed",sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.13em;
-  text-transform:uppercase;color:var(--ink-3);margin:16px 0 7px
+  text-transform:uppercase;color:var(--ink-3);margin:18px 0 7px
 }
+.pills{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 4px}
+.pill{font-size:11.5px;font-weight:600;padding:4px 9px;border-radius:99px;background:var(--surface-2);color:var(--ink-2)}
+
+/* selector de estado */
+.opts{display:flex;flex-direction:column;gap:6px}
+.opt{
+  display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:12px;
+  border:1.5px solid var(--line);background:var(--surface);width:100%;transition:border-color .15s,background .15s
+}
+.opt .ic{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto;border:2px solid currentColor}
+.opt b{display:block;font-size:14.5px;font-weight:600}
+.opt small{display:block;font-size:11.5px;color:var(--ink-3)}
+.opt[aria-pressed="true"]{border-color:currentColor;background:var(--sel-bg)}
+.opt .tx{flex:1 1 auto;color:var(--ink)}
+
+/* selector de período académico */
+.termbar{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.stepper{display:flex;align-items:center;gap:2px;background:var(--surface-2);border-radius:10px;padding:2px}
+.stepper button{width:30px;height:30px;display:grid;place-items:center;border-radius:8px;color:var(--ink-2)}
+.stepper .anio{
+  font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:14px;padding:0 8px;min-width:56px;text-align:center
+}
+.termchips{display:flex;gap:5px;flex-wrap:wrap}
+.tc{
+  border:1px solid var(--line);background:var(--surface);border-radius:9px;padding:7px 11px;
+  font-size:13px;font-weight:600;color:var(--ink-2)
+}
+.tc[aria-pressed="true"]{background:var(--verde);border-color:var(--verde);color:var(--sobre-verde)}
+
+/* enlaces de requisitos */
 .link{display:flex;align-items:center;gap:9px;padding:7px 0;font-size:13.5px}
-.link .st{flex:0 0 auto;color:var(--ink-3)}
+.link .st{flex:0 0 auto;color:var(--ink-3);width:16px;text-align:center}
 .link.ok .st{color:var(--verde)}
 .link small{display:block;color:var(--ink-3);font-size:11px;font-family:"IBM Plex Mono",monospace}
+
+/* formularios */
+.campo{margin-bottom:11px}
+.campo label{display:block;font-size:11.5px;font-weight:600;color:var(--ink-3);margin-bottom:4px}
+.campo input,.campo select,.campo textarea{
+  width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);
+  background:var(--ground);outline:none
+}
+.campo input:focus,.campo select:focus,.campo textarea:focus{border-color:var(--verde)}
+.campo .hint{font-size:11px;color:var(--ink-3);margin-top:4px}
+.dos{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.checks{display:flex;flex-direction:column;gap:8px}
+.checks label{display:flex;align-items:center;gap:9px;font-size:13.5px}
+.checks input{width:18px;height:18px;accent-color:var(--verde)}
+
 .toast{
   position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 78px);transform:translate(-50%,14px);
   background:var(--ink);color:var(--ground);font-size:13px;font-weight:500;padding:9px 16px;border-radius:99px;
-  z-index:50;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s
+  z-index:50;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;max-width:86vw;text-align:center
 }
 .toast.show{opacity:1;transform:translate(-50%,0)}
 
@@ -267,21 +324,21 @@ nav{
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:11px;align-items:start}
   .grid2 .periodo+.periodo{margin-top:0}
 }
-@media (prefers-reduced-motion:reduce){
-  *{transition-duration:.01ms !important;animation-duration:.01ms !important}
-}
+@media (prefers-reduced-motion:reduce){*{transition-duration:.01ms !important}}
 </style>
 
 <div class="topbar">
   <div class="topbar-in">
-    <span class="brand">Mi Pensum</span>
+    <button class="planbtn" id="planBtn" aria-label="Cambiar de pensum">
+      <span class="nom" id="planNom">Mi Pensum</span>
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
     <span class="pct" id="topPct">0%</span>
   </div>
-  <div class="topbar-in"><div class="railtrack" style="flex:1"><div class="railfill" id="topRail" style="width:0%"></div></div></div>
+  <div class="topbar-in"><div class="railtrack"><div class="railfill" id="topRail" style="width:0%"></div></div></div>
 </div>
 
 <main>
-  <!-- ══ PENSUM ══ -->
   <div class="view" id="view-pensum">
     <div class="hero">
       <div class="ring">
@@ -294,10 +351,10 @@ nav{
         <div class="val" id="ringVal">0%</div>
       </div>
       <div style="min-width:0">
-        <div class="eyebrow">UTH · Plan de estudio 2021</div>
-        <h1>Ingeniería en Computación</h1>
-        <div class="uvtext" id="heroUv">0 de 214 UV descartadas</div>
-        <div class="sub" id="heroSub">0 clases listas · 56 por llevar</div>
+        <div class="eyebrow" id="heroInst">UTH</div>
+        <h1 id="heroPlan">Ingeniería en Computación</h1>
+        <div class="uvtext" id="heroUv"></div>
+        <div class="sub" id="heroSub"></div>
       </div>
     </div>
 
@@ -306,57 +363,70 @@ nav{
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="color:var(--ink-3);flex:0 0 auto" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
         <input id="q" type="search" placeholder="Buscar clase o código" autocomplete="off" aria-label="Buscar clase o código">
       </label>
-      <div class="chips" role="group" aria-label="Filtrar por estado">
-        <button class="chip" data-filtro="todas" aria-pressed="true">Todas</button>
-        <button class="chip" data-filtro="pendiente" aria-pressed="false">Pendientes</button>
-        <button class="chip" data-filtro="cursando" aria-pressed="false">Cursando</button>
-        <button class="chip" data-filtro="descartada" aria-pressed="false">Descartadas</button>
-      </div>
+      <div class="chips" id="filtros" role="group" aria-label="Filtrar por estado"></div>
     </div>
 
     <div id="periodos" class="grid2" style="margin-top:13px"></div>
-
-    <p class="note" style="margin-top:16px">
-      <strong style="color:var(--ink-2)">XII Período —</strong> para cursar la Práctica Profesional
-      Supervisada debés haber cursado las 2 pasantías y estar llevando las dos últimas clases,
-      o haber cursado todo el plan.
-    </p>
+    <div id="notaPlan"></div>
   </div>
 
-  <!-- ══ PUEDO LLEVAR ══ -->
   <div class="view" id="view-libres" hidden>
     <h2 class="sec" style="margin-top:4px">Listo para matricular</h2>
     <p class="note" id="libresIntro" style="margin-bottom:12px"></p>
     <div id="libres"></div>
   </div>
 
-  <!-- ══ RESUMEN ══ -->
   <div class="view" id="view-resumen" hidden>
     <h2 class="sec" style="margin-top:4px">De un vistazo</h2>
     <div class="tiles" id="tiles"></div>
-
-    <h2 class="sec">Avance por período</h2>
-    <div class="card" id="barPeriodos"></div>
-
+    <h2 class="sec">Avance por período del plan</h2>
+    <div class="card tight" id="barPeriodos"></div>
     <h2 class="sec">Avance por área</h2>
-    <div class="card" id="barAreas"></div>
+    <div class="card tight" id="barAreas"></div>
+    <h2 class="sec">Lo que he cursado, por período</h2>
+    <div id="historial"></div>
+  </div>
 
-    <h2 class="sec">Simbología del plan</h2>
+  <div class="view" id="view-ajustes" hidden>
+    <h2 class="sec" style="margin-top:4px">Período actual</h2>
+    <div class="card">
+      <p class="note" style="margin:0 0 10px">El que se asigna por defecto cuando marcás una clase.</p>
+      <div id="termActual"></div>
+    </div>
+
+    <h2 class="sec">Mis pénsum</h2>
+    <div class="card tight" id="listaPlanes"></div>
+    <div class="actions">
+      <button class="btn sm" id="btnNuevoPlan">Crear un pensum nuevo</button>
+      <button class="btn sm" id="btnEditarPlan">Editar el pensum activo</button>
+    </div>
+
+    <h2 class="sec">Modo rápido</h2>
+    <div class="card tight">
+      <button class="row" id="rowRapido">
+        <div class="txt"><b>Marcar con un toque</b>
+          <small>Tocar una clase la descarta de una, sin abrir el detalle. Útil para cargar todo lo que ya pasaste.</small></div>
+        <span class="sw" id="swRapido"></span>
+      </button>
+    </div>
+
+    <h2 class="sec">Mi avance</h2>
+    <div class="card tight">
+      <button class="row" data-ajuste="compartir"><div class="txt"><b>Compartir mi avance</b><small>Texto listo para WhatsApp</small></div><span class="go">&#8250;</span></button>
+      <button class="row" data-ajuste="respaldo"><div class="txt"><b>Respaldar todo</b><small>Copia un código con tus pénsum y tu avance</small></div><span class="go">&#8250;</span></button>
+      <button class="row" data-ajuste="restaurar"><div class="txt"><b>Restaurar respaldo</b><small>Pegá el código en otro teléfono</small></div><span class="go">&#8250;</span></button>
+      <button class="row" data-ajuste="reiniciar"><div class="txt"><b style="color:var(--rojo)">Reiniciar este pensum</b><small>Todas las clases vuelven a pendiente</small></div><span class="go">&#8250;</span></button>
+    </div>
+
+    <h2 class="sec">Simbología</h2>
     <div class="card legend">
       <div><span class="flag inv" style="margin-top:6px"></span><span>Punto rojo — componente de investigación</span></div>
       <div><span style="color:var(--verde);font-size:11px;margin-top:2px">&#9733;</span><span>Estrella verde — componente de vinculación</span></div>
-      <div><span style="color:var(--ink-3);margin-top:1px">&#9679;</span><span>Al terminar Ingeniería de Software II cursás la Pasantía Profesional Supervisada I (80 hrs); al terminar Redes IV, la Pasantía II.</span></div>
     </div>
 
-    <div class="actions">
-      <button class="btn prim" id="btnShare">Compartir mi avance</button>
-      <button class="btn danger" id="btnReset">Reiniciar todo el pensum</button>
-    </div>
-
-    <p class="note" style="margin-top:18px">
-      Códigos, nombres, UV y períodos salen del mapa curricular del brochure de la UTH.
-      Las prelaciones son las cadenas visibles del diagrama: confirmalas con tu coordinación
-      académica antes de matricular.
+    <p class="note" style="margin-top:16px">
+      Tu avance se guarda solo en este teléfono, en este navegador. Si borrás los datos de
+      Safari se pierde: hacé un respaldo de vez en cuando.
     </p>
   </div>
 </main>
@@ -364,157 +434,232 @@ nav{
 <nav>
   <div class="nav-in" role="tablist">
     <button class="tab" role="tab" data-view="pensum" aria-selected="true">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M4 5h16M4 12h16M4 19h16"/></svg>
-      Pensum
-    </button>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M4 5h16M4 12h16M4 19h16"/></svg>Pensum</button>
     <button class="tab" role="tab" data-view="libres" aria-selected="false">
       <span style="position:relative;display:block">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M4.5 12.5 9 17l10.5-10.5"/></svg>
-        <span class="badge" id="badgeLibres" hidden>0</span>
-      </span>
-      Puedo llevar
-    </button>
+        <span class="badge" id="badgeLibres" hidden>0</span></span>Puedo llevar</button>
     <button class="tab" role="tab" data-view="resumen" aria-selected="false">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M5 20V10M12 20V4M19 20v-6"/></svg>
-      Resumen
-    </button>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M5 20V10M12 20V4M19 20v-6"/></svg>Resumen</button>
+    <button class="tab" role="tab" data-view="ajustes" aria-selected="false">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 3v2.2M12 18.8V21M21 12h-2.2M5.2 12H3M18.4 5.6l-1.6 1.6M7.2 16.8l-1.6 1.6M18.4 18.4l-1.6-1.6M7.2 7.2 5.6 5.6"/></svg>Ajustes</button>
   </div>
 </nav>
 
 <div class="scrim" id="scrim"></div>
-<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Detalle de la clase"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true"></div>
 <div class="toast" id="toast"></div>
 
 <script>
 "use strict";
 
-/* ───────── Plan de estudio: Ingeniería en Computación, UTH (brochure 2021) ─────────
-   c=código, n=nombre, uv, p=período, a=área, r=requisitos, f=marcas
-   f: i=investigación, v=vinculación, 1=pasantía I, 2=pasantía II          */
+/* ═══ iconos ═══ */
+const I = {
+  check:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5 9.5 17.5 19.5 6.5"/></svg>',
+  reloj:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5.5l3.5 2"/></svg>',
+  repe :'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20 4v4.5h-4.5"/></svg>',
+  equis:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"><path d="M6.5 6.5 17.5 17.5M17.5 6.5 6.5 17.5"/></svg>',
+  lock :'<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><rect x="4" y="10.5" width="16" height="11" rx="2.5"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></svg>'
+};
+
+/* ═══ catálogos ═══ */
 const AREAS = {
   exactas:{n:"Exactas",c:"var(--a-exactas)"}, desarrollo:{n:"Desarrollo",c:"var(--a-desarrollo)"},
   redes:{n:"Redes y telecom.",c:"var(--a-redes)"}, humanas:{n:"Habilidades humanas",c:"var(--a-humanas)"},
   electronica:{n:"Electrónica",c:"var(--a-electronica)"}, idiomas:{n:"Idiomas",c:"var(--a-idiomas)"},
-  practica:{n:"Práctica profesional",c:"var(--a-practica)"}
+  practica:{n:"Práctica profesional",c:"var(--a-practica)"}, otra:{n:"Otra",c:"var(--ink-3)"}
 };
 
-const CURSOS = [
-  {c:"MAE-0501",n:"Matemática I",uv:4,p:1,a:"exactas",r:[]},
-  {c:"ADE-0901",n:"Administración I",uv:4,p:1,a:"humanas",r:[]},
-  {c:"IIC-0600",n:"Introducción a la Ingeniería Computacional",uv:4,p:1,a:"desarrollo",r:[]},
-  {c:"ESG-9201",n:"Español I",uv:3,p:1,a:"humanas",r:[]},
-  {c:"ADE-0601",n:"Análisis y Diseño de Algoritmos",uv:4,p:1,a:"desarrollo",r:[]},
+const ESTADOS = {
+  descartada:{n:"Descartada", d:"Ya la aprobé", ic:I.check, c:"var(--verde)",  bg:"var(--verde-soft)"},
+  cursando  :{n:"Cursando",   d:"La estoy llevando", ic:I.reloj, c:"var(--oro)", bg:"var(--oro-soft)"},
+  repitiendo:{n:"Repitiendo", d:"La llevo otra vez", ic:I.repe,  c:"var(--repite)", bg:"var(--repite-soft)"},
+  retirada  :{n:"Retirada",   d:"Me retiré de la clase", ic:I.equis, c:"var(--retira)", bg:"var(--retira-soft)"},
+  pendiente :{n:"Pendiente",  d:"Todavía no la llevo", ic:"", c:"var(--ink-3)", bg:"var(--surface-2)"}
+};
+const ORDEN_ESTADOS = ["descartada","cursando","repitiendo","retirada","pendiente"];
 
-  {c:"GTE-0513",n:"Geometría y Trigonometría",uv:4,p:2,a:"exactas",r:["MAE-0501"]},
-  {c:"CCE-0801",n:"Contabilidad General",uv:4,p:2,a:"humanas",r:["ADE-0901"]},
-  {c:"HHG-0401",n:"Historia de Honduras",uv:3,p:2,a:"humanas",r:[]},
-  {c:"SCG-0303",n:"Sociología",uv:4,p:2,a:"humanas",r:[]},
-  {c:"PEE-0603",n:"Programación Estructurada",uv:4,p:2,a:"desarrollo",r:["ADE-0601"]},
-
-  {c:"MAE-0514",n:"Pre Cálculo",uv:4,p:3,a:"exactas",r:["GTE-0513"]},
-  {c:"INE-0204",n:"Inglés I",uv:3,p:3,a:"idiomas",r:[]},
-  {c:"EDE-0605",n:"Estructura de Datos",uv:4,p:3,a:"desarrollo",r:["PEE-0603"]},
-  {c:"FIG-0301",n:"Filosofía",uv:4,p:3,a:"humanas",r:[]},
-  {c:"POE-0604",n:"Programación Orientada a Objetos",uv:4,p:3,a:"desarrollo",r:["PEE-0603"]},
-
-  {c:"CAE-0504",n:"Cálculo I",uv:4,p:4,a:"exactas",r:["MAE-0514"]},
-  {c:"INE-0205",n:"Inglés II",uv:3,p:4,a:"idiomas",r:["INE-0204"]},
-  {c:"SOE-0608",n:"Sistemas Operativos I",uv:4,p:4,a:"redes",r:["EDE-0605"]},
-  {c:"BDE-0606",n:"Base de Datos I",uv:4,p:4,a:"desarrollo",r:["EDE-0605"]},
-  {c:"PAE-0606",n:"Programación Avanzada I",uv:4,p:4,a:"desarrollo",r:["POE-0604"]},
-
-  {c:"ALE-0511",n:"Álgebra Lineal",uv:4,p:5,a:"exactas",r:["CAE-0504"]},
-  {c:"CAE-0505",n:"Cálculo II",uv:4,p:5,a:"exactas",r:["CAE-0504"]},
-  {c:"SOE-0610",n:"Sistemas Operativos II",uv:4,p:5,a:"redes",r:["SOE-0608"]},
-  {c:"BDE-0609",n:"Base de Datos II",uv:4,p:5,a:"desarrollo",r:["BDE-0606"]},
-  {c:"PAE-0607",n:"Programación Avanzada II",uv:4,p:5,a:"desarrollo",r:["PAE-0606"],f:"v"},
-
-  {c:"FIE-1901",n:"Física I",uv:4,p:6,a:"exactas",r:["ALE-0511"]},
-  {c:"EDE-0512",n:"Ecuaciones Diferenciales",uv:4,p:6,a:"exactas",r:["CAE-0505"]},
-  {c:"RCE-0613",n:"Redes I",uv:4,p:6,a:"redes",r:["SOE-0610"]},
-  {c:"PWE-0604",n:"Programación Web I",uv:4,p:6,a:"desarrollo",r:["BDE-0609"]},
-  {c:"ISE-0614",n:"Ingeniería de Software I",uv:4,p:6,a:"desarrollo",r:["PAE-0607"]},
-
-  {c:"FIE-1902",n:"Física II",uv:4,p:7,a:"exactas",r:["FIE-1901"]},
-  {c:"RMH-0603",n:"Reparación y Mantenimiento de Hardware y Software",uv:4,p:7,a:"electronica",r:["EDE-0512"]},
-  {c:"RCE-0614",n:"Redes II",uv:4,p:7,a:"redes",r:["RCE-0613"]},
-  {c:"PWE-0606",n:"Programación Web II",uv:4,p:7,a:"desarrollo",r:["PWE-0604"],f:"v"},
-  {c:"ISE-0617",n:"Ingeniería de Software II",uv:4,p:7,a:"desarrollo",r:["ISE-0614"],f:"i1"},
-
-  {c:"ETE-0507",n:"Estadística I",uv:4,p:8,a:"exactas",r:["FIE-1902"]},
-  {c:"ACE-0623",n:"Arquitectura de Computadoras",uv:4,p:8,a:"electronica",r:["RMH-0603"]},
-  {c:"RCE-0615",n:"Redes III",uv:4,p:8,a:"redes",r:["RCE-0614"]},
-  {c:"PTI-0620",n:"Computación en la Nube",uv:4,p:8,a:"redes",r:["PWE-0606"]},
-  {c:"PMO-0602",n:"Programación Móvil I",uv:4,p:8,a:"desarrollo",r:["ISE-0617"]},
-
-  {c:"PEM-0610",n:"Programación Embebida",uv:4,p:9,a:"electronica",r:["ETE-0507"]},
-  {c:"E-I",n:"Electiva I",uv:3,p:9,a:"humanas",r:[]},
-  {c:"RCE-0618",n:"Redes IV",uv:4,p:9,a:"redes",r:["RCE-0615"],f:"i2"},
-  {c:"CGV-0601",n:"Computación Gráfica y Visual",uv:4,p:9,a:"desarrollo",r:["PTI-0620"]},
-  {c:"PMO-0604",n:"Programación Móvil II",uv:4,p:9,a:"desarrollo",r:["PMO-0602"],f:"v"},
-
-  {c:"IAE-0611",n:"Inteligencia Artificial",uv:4,p:10,a:"desarrollo",r:["PEM-0610"],f:"i"},
-  {c:"E-II",n:"Electiva II",uv:3,p:10,a:"humanas",r:["E-I"]},
-  {c:"IOT-0607",n:"Internet de las Cosas (IOT)",uv:4,p:10,a:"electronica",r:["RCE-0618"],f:"i"},
-  {c:"ARE-0807",n:"Automatización y Robótica Industrial",uv:4,p:10,a:"electronica",r:["CGV-0601"]},
-  {c:"PSA-0603",n:"Programación para Sistemas Abiertos I",uv:4,p:10,a:"desarrollo",r:["PMO-0604"],f:"v"},
-
-  {c:"OCE-0620",n:"Organización de Centros de Cómputo",uv:4,p:11,a:"humanas",r:["IAE-0611"]},
-  {c:"SIP-0620",n:"Telefonía y Seguridad IP",uv:4,p:11,a:"redes",r:["E-II"],f:"i"},
-  {c:"ASE-0619",n:"Auditoría y Seguridad de Sistemas",uv:4,p:11,a:"redes",r:["IOT-0607"]},
-  {c:"E-III",n:"Electiva III (Inteligencia de Negocios)",uv:4,p:11,a:"humanas",r:["ARE-0807"]},
-  {c:"PSA-0605",n:"Programación para Sistemas Abiertos II",uv:4,p:11,a:"desarrollo",r:["PSA-0603"],f:"v"},
-
-  {c:"PPS-1223",n:"Práctica Profesional Supervisada",uv:0,p:12,a:"practica",r:["ISE-0617","RCE-0618"]}
+/* Períodos académicos: la UTH lleva tres al año más el intensivo. */
+const TERMINOS = [
+  {cod:"I",   n:"I Período"},
+  {cod:"II",  n:"II Período"},
+  {cod:"III", n:"III Período"},
+  {cod:"INT", n:"Intensivo"}
 ];
+const termNombre = cod => (TERMINOS.find(t => t.cod === cod) || {n:cod}).n;
+const termId = (anio, cod) => `${anio}-${cod}`;
+function termLabel(id){
+  if (!id) return "";
+  const [anio, cod] = String(id).split("-");
+  return cod === "INT" ? `Intensivo ${anio}` : `${cod} Período ${anio}`;
+}
+function termCorto(id){
+  if (!id) return "";
+  const [anio, cod] = String(id).split("-");
+  return cod === "INT" ? `INT ${anio}` : `${cod} ${anio}`;
+}
+const ROMANO = ["","I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI"];
+const romano = p => ROMANO[p] || String(p);
 
-const ROMANO = ["","I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII"];
-const PERIODOS = [...new Set(CURSOS.map(c => c.p))].sort((a,b) => a-b);
-const PORCODIGO = Object.fromEntries(CURSOS.map(c => [c.c, c]));
-const UV_TOTAL = CURSOS.reduce((s,c) => s + c.uv, 0);
-const CLAVE = "pensum.uth.v1";
-const ETIQ = { todas:"Todas", pendiente:"Pendientes", cursando:"Cursando", descartada:"Descartadas" };
+/* ═══ pensum de fábrica ═══ */
+const FABRICA = {
+  id:"uth-ic", nombre:"Ingeniería en Computación", inst:"UTH · Plan 2021",
+  nota:"Para cursar la Práctica Profesional Supervisada debés haber cursado las 2 pasantías y estar llevando las dos últimas clases, o haber cursado todo el plan.",
+  cursos:[
+    {c:"MAE-0501",n:"Matemática I",uv:4,p:1,a:"exactas",r:[]},
+    {c:"ADE-0901",n:"Administración I",uv:4,p:1,a:"humanas",r:[]},
+    {c:"IIC-0600",n:"Introducción a la Ingeniería Computacional",uv:4,p:1,a:"desarrollo",r:[]},
+    {c:"ESG-9201",n:"Español I",uv:3,p:1,a:"humanas",r:[]},
+    {c:"ADE-0601",n:"Análisis y Diseño de Algoritmos",uv:4,p:1,a:"desarrollo",r:[]},
+    {c:"GTE-0513",n:"Geometría y Trigonometría",uv:4,p:2,a:"exactas",r:["MAE-0501"]},
+    {c:"CCE-0801",n:"Contabilidad General",uv:4,p:2,a:"humanas",r:["ADE-0901"]},
+    {c:"HHG-0401",n:"Historia de Honduras",uv:3,p:2,a:"humanas",r:[]},
+    {c:"SCG-0303",n:"Sociología",uv:4,p:2,a:"humanas",r:[]},
+    {c:"PEE-0603",n:"Programación Estructurada",uv:4,p:2,a:"desarrollo",r:["ADE-0601"]},
+    {c:"MAE-0514",n:"Pre Cálculo",uv:4,p:3,a:"exactas",r:["GTE-0513"]},
+    {c:"INE-0204",n:"Inglés I",uv:3,p:3,a:"idiomas",r:[]},
+    {c:"EDE-0605",n:"Estructura de Datos",uv:4,p:3,a:"desarrollo",r:["PEE-0603"]},
+    {c:"FIG-0301",n:"Filosofía",uv:4,p:3,a:"humanas",r:[]},
+    {c:"POE-0604",n:"Programación Orientada a Objetos",uv:4,p:3,a:"desarrollo",r:["PEE-0603"]},
+    {c:"CAE-0504",n:"Cálculo I",uv:4,p:4,a:"exactas",r:["MAE-0514"]},
+    {c:"INE-0205",n:"Inglés II",uv:3,p:4,a:"idiomas",r:["INE-0204"]},
+    {c:"SOE-0608",n:"Sistemas Operativos I",uv:4,p:4,a:"redes",r:["EDE-0605"]},
+    {c:"BDE-0606",n:"Base de Datos I",uv:4,p:4,a:"desarrollo",r:["EDE-0605"]},
+    {c:"PAE-0606",n:"Programación Avanzada I",uv:4,p:4,a:"desarrollo",r:["POE-0604"]},
+    {c:"ALE-0511",n:"Álgebra Lineal",uv:4,p:5,a:"exactas",r:["CAE-0504"]},
+    {c:"CAE-0505",n:"Cálculo II",uv:4,p:5,a:"exactas",r:["CAE-0504"]},
+    {c:"SOE-0610",n:"Sistemas Operativos II",uv:4,p:5,a:"redes",r:["SOE-0608"]},
+    {c:"BDE-0609",n:"Base de Datos II",uv:4,p:5,a:"desarrollo",r:["BDE-0606"]},
+    {c:"PAE-0607",n:"Programación Avanzada II",uv:4,p:5,a:"desarrollo",r:["PAE-0606"],f:"v"},
+    {c:"FIE-1901",n:"Física I",uv:4,p:6,a:"exactas",r:["ALE-0511"]},
+    {c:"EDE-0512",n:"Ecuaciones Diferenciales",uv:4,p:6,a:"exactas",r:["CAE-0505"]},
+    {c:"RCE-0613",n:"Redes I",uv:4,p:6,a:"redes",r:["SOE-0610"]},
+    {c:"PWE-0604",n:"Programación Web I",uv:4,p:6,a:"desarrollo",r:["BDE-0609"]},
+    {c:"ISE-0614",n:"Ingeniería de Software I",uv:4,p:6,a:"desarrollo",r:["PAE-0607"]},
+    {c:"FIE-1902",n:"Física II",uv:4,p:7,a:"exactas",r:["FIE-1901"]},
+    {c:"RMH-0603",n:"Reparación y Mantenimiento de Hardware y Software",uv:4,p:7,a:"electronica",r:["EDE-0512"]},
+    {c:"RCE-0614",n:"Redes II",uv:4,p:7,a:"redes",r:["RCE-0613"]},
+    {c:"PWE-0606",n:"Programación Web II",uv:4,p:7,a:"desarrollo",r:["PWE-0604"],f:"v"},
+    {c:"ISE-0617",n:"Ingeniería de Software II",uv:4,p:7,a:"desarrollo",r:["ISE-0614"],f:"i1"},
+    {c:"ETE-0507",n:"Estadística I",uv:4,p:8,a:"exactas",r:["FIE-1902"]},
+    {c:"ACE-0623",n:"Arquitectura de Computadoras",uv:4,p:8,a:"electronica",r:["RMH-0603"]},
+    {c:"RCE-0615",n:"Redes III",uv:4,p:8,a:"redes",r:["RCE-0614"]},
+    {c:"PTI-0620",n:"Computación en la Nube",uv:4,p:8,a:"redes",r:["PWE-0606"]},
+    {c:"PMO-0602",n:"Programación Móvil I",uv:4,p:8,a:"desarrollo",r:["ISE-0617"]},
+    {c:"PEM-0610",n:"Programación Embebida",uv:4,p:9,a:"electronica",r:["ETE-0507"]},
+    {c:"E-I",n:"Electiva I",uv:3,p:9,a:"humanas",r:[]},
+    {c:"RCE-0618",n:"Redes IV",uv:4,p:9,a:"redes",r:["RCE-0615"],f:"i2"},
+    {c:"CGV-0601",n:"Computación Gráfica y Visual",uv:4,p:9,a:"desarrollo",r:["PTI-0620"]},
+    {c:"PMO-0604",n:"Programación Móvil II",uv:4,p:9,a:"desarrollo",r:["PMO-0602"],f:"v"},
+    {c:"IAE-0611",n:"Inteligencia Artificial",uv:4,p:10,a:"desarrollo",r:["PEM-0610"],f:"i"},
+    {c:"E-II",n:"Electiva II",uv:3,p:10,a:"humanas",r:["E-I"]},
+    {c:"IOT-0607",n:"Internet de las Cosas (IOT)",uv:4,p:10,a:"electronica",r:["RCE-0618"],f:"i"},
+    {c:"ARE-0807",n:"Automatización y Robótica Industrial",uv:4,p:10,a:"electronica",r:["CGV-0601"]},
+    {c:"PSA-0603",n:"Programación para Sistemas Abiertos I",uv:4,p:10,a:"desarrollo",r:["PMO-0604"],f:"v"},
+    {c:"OCE-0620",n:"Organización de Centros de Cómputo",uv:4,p:11,a:"humanas",r:["IAE-0611"]},
+    {c:"SIP-0620",n:"Telefonía y Seguridad IP",uv:4,p:11,a:"redes",r:["E-II"],f:"i"},
+    {c:"ASE-0619",n:"Auditoría y Seguridad de Sistemas",uv:4,p:11,a:"redes",r:["IOT-0607"]},
+    {c:"E-III",n:"Electiva III (Inteligencia de Negocios)",uv:4,p:11,a:"humanas",r:["ARE-0807"]},
+    {c:"PSA-0605",n:"Programación para Sistemas Abiertos II",uv:4,p:11,a:"desarrollo",r:["PSA-0603"],f:"v"},
+    {c:"PPS-1223",n:"Práctica Profesional Supervisada",uv:0,p:12,a:"practica",r:["ISE-0617","RCE-0618"]}
+  ]
+};
 
-/* ───────── estado ───────── */
-let estados = {};
-try {
-  const raw = localStorage.getItem(CLAVE);
-  if (raw) estados = JSON.parse(raw) || {};
-} catch (e) { estados = {}; }
+/* ═══ almacenamiento ═══ */
+const CLAVE = "pensum.app.v2";
+const CLAVE_V1 = "pensum.uth.v1";
+const anioHoy = new Date().getFullYear();
+
+let DB = null;
+
+function nuevaDB(){
+  return { v:2, planes:[clonar(FABRICA)], activo:FABRICA.id,
+           actual:{anio:anioHoy, cod:"I"}, rapido:false, avance:{} };
+}
+const clonar = o => JSON.parse(JSON.stringify(o));
+
+function cargar(){
+  try {
+    const crudo = localStorage.getItem(CLAVE);
+    if (crudo){
+      const d = JSON.parse(crudo);
+      if (d && Array.isArray(d.planes) && d.planes.length){
+        DB = d;
+        DB.avance = DB.avance || {};
+        DB.actual = DB.actual || {anio:anioHoy, cod:"I"};
+        if (!DB.planes.some(p => p.id === DB.activo)) DB.activo = DB.planes[0].id;
+        return;
+      }
+    }
+  } catch (e) {}
+
+  DB = nuevaDB();
+
+  /* migración desde la primera versión */
+  try {
+    const viejo = localStorage.getItem(CLAVE_V1);
+    if (viejo){
+      const est = JSON.parse(viejo) || {};
+      const dest = DB.avance[FABRICA.id] = {};
+      for (const cod in est) dest[cod] = { e: est[cod] };
+    }
+  } catch (e) {}
+  guardar();
+}
 
 function guardar(){
-  try { localStorage.setItem(CLAVE, JSON.stringify(estados)); } catch (e) {}
+  try { localStorage.setItem(CLAVE, JSON.stringify(DB)); }
+  catch (e) { aviso("No se pudo guardar: el almacenamiento está lleno"); }
 }
 
-let filtro = "todas";
-let busqueda = "";
-let vista = "pensum";
-let colapsados = new Set();
-
-const est = c => estados[c.c] || "pendiente";
+/* ═══ acceso al plan activo ═══ */
+const plan = () => DB.planes.find(p => p.id === DB.activo) || DB.planes[0];
+const cursos = () => plan().cursos;
+const porCodigo = () => Object.fromEntries(cursos().map(c => [c.c, c]));
+const periodos = () => [...new Set(cursos().map(c => c.p))].sort((a,b) => a-b);
+const avancePlan = () => (DB.avance[plan().id] = DB.avance[plan().id] || {});
+const av = c => avancePlan()[c.c] || {e:"pendiente"};
+const est = c => av(c).e;
 const hecha = c => est(c) === "descartada";
-const faltantes = c => c.r.map(x => PORCODIGO[x]).filter(x => x && !hecha(x));
-const bloqueada = c => !hecha(c) && faltantes(c).length > 0;
-const habilita = c => CURSOS.filter(x => x.r.includes(c.c));
-const libres = () => CURSOS.filter(c => est(c) === "pendiente" && faltantes(c).length === 0);
+const termDe = c => av(c).t || "";
 
-function fijar(c, nuevo){
-  if (nuevo === "pendiente") delete estados[c.c]; else estados[c.c] = nuevo;
+function fijar(codigo, estado, term){
+  const a = avancePlan();
+  if (estado === "pendiente") delete a[codigo];
+  else a[codigo] = term ? {e:estado, t:term} : {e:estado};
   guardar(); render();
 }
-function alternar(c){ fijar(c, hecha(c) ? "pendiente" : "descartada"); }
+
+const faltantes = c => {
+  const idx = porCodigo();
+  return (c.r || []).map(x => idx[x]).filter(x => x && !hecha(x));
+};
+const bloqueada = c => !hecha(c) && faltantes(c).length > 0;
+const habilita = c => cursos().filter(x => (x.r || []).includes(c.c));
+const disponible = c => (est(c) === "pendiente" || est(c) === "retirada") && faltantes(c).length === 0;
+const libres = () => cursos().filter(disponible);
 
 function avance(lista){
-  let uvOk = 0, uvT = 0, ok = 0, cur = 0;
+  let uvOk = 0, uvT = 0, ok = 0, cur = 0, rep = 0, ret = 0;
   for (const c of lista){
-    uvT += c.uv;
-    if (est(c) === "descartada"){ uvOk += c.uv; ok++; }
-    else if (est(c) === "cursando") cur++;
+    uvT += c.uv || 0;
+    const e = est(c);
+    if (e === "descartada"){ uvOk += c.uv || 0; ok++; }
+    else if (e === "cursando") cur++;
+    else if (e === "repitiendo") rep++;
+    else if (e === "retirada") ret++;
   }
-  return { uvOk, uvT, ok, cur, total: lista.length, pend: lista.length - ok,
-           frac: uvT ? uvOk / uvT : 0 };
+  return {uvOk, uvT, ok, cur, rep, ret, total:lista.length, pend:lista.length - ok,
+          frac: uvT ? uvOk / uvT : 0};
 }
-const delPeriodo = p => CURSOS.filter(c => c.p === p);
+const delPeriodo = p => cursos().filter(c => c.p === p);
+
+/* ═══ estado de la interfaz ═══ */
+let filtro = "todas", busqueda = "", vista = "pensum";
+let colapsados = new Set();
+
+const FILTROS = [["todas","Todas"],["pendiente","Pendientes"],["cursando","Cursando"],
+                 ["repitiendo","Repitiendo"],["retirada","Retiradas"],["descartada","Descartadas"]];
 
 function visible(c){
   if (filtro !== "todas" && est(c) !== filtro) return false;
@@ -523,214 +668,369 @@ function visible(c){
   return c.n.toLowerCase().includes(q) || c.c.toLowerCase().includes(q);
 }
 
-/* ───────── utilidades de render ───────── */
-const esc = s => String(s).replace(/[&<>"']/g, m =>
+const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, m =>
   ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
 
-const CHECK = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5 9.5 17.5 19.5 6.5"/></svg>';
-const LOCK = '<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><rect x="4" y="10.5" width="16" height="11" rx="2.5"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></svg>';
-
+/* ═══ render: filas ═══ */
 function filaHTML(c){
-  const e = est(c);
-  const cls = e === "descartada" ? "hecha" : (e === "cursando" ? "cursando" : "");
-  const flags = (c.f || "");
+  const e = est(c), t = termDe(c);
+  const f = c.f || "";
   let marcas = "";
-  if (flags.includes("i")) marcas += '<span class="flag inv" title="Componente de investigación"></span>';
-  if (flags.includes("v")) marcas += '<span style="color:var(--verde);font-size:9px;line-height:1" title="Componente de vinculación">&#9733;</span>';
+  if (f.includes("i")) marcas += '<span class="flag inv" title="Componente de investigación"></span>';
+  if (f.includes("v")) marcas += '<span style="color:var(--verde);font-size:9px;line-height:1" title="Componente de vinculación">&#9733;</span>';
+
+  let chips = "";
+  if (e === "descartada"){
+    /* el check y el tachado ya dicen que está aprobada: acá solo interesa cuándo */
+    if (t) chips += `<span class="marca descartada">${esc(termCorto(t))}</span>`;
+  } else if (e !== "pendiente"){
+    chips += `<span class="marca ${e}">${ESTADOS[e].ic} ${ESTADOS[e].n}${t ? " · " + esc(termCorto(t)) : ""}</span>`;
+  }
   const falta = bloqueada(c) ? faltantes(c)[0] : null;
-  return `<div class="clase ${cls}" data-c="${c.c}">
-    <button class="tick" data-act="toggle" aria-pressed="${e === "descartada"}"
-            aria-label="${e === "descartada" ? "Restaurar" : "Descartar"} ${esc(c.n)}">
-      <span class="dot">${CHECK}</span>
-    </button>
-    <span class="stripe" style="background:${AREAS[c.a].c}"></span>
-    <button class="info" data-act="detalle" aria-label="Ver detalle de ${esc(c.n)}">
+  if (falta && e === "pendiente") chips += `<span class="marca lock">${I.lock} Falta ${esc(falta.c)}</span>`;
+
+  return `<button class="clase" data-e="${e}" data-c="${esc(c.c)}">
+    <span class="tick"><span class="dot">${ESTADOS[e].ic}</span></span>
+    <span class="stripe" style="background:${(AREAS[c.a] || AREAS.otra).c}"></span>
+    <span class="info">
       <span class="code">${esc(c.c)}${marcas}</span>
       <span class="nombre">${esc(c.n)}</span>
-      ${falta ? `<span class="lock">${LOCK} Falta ${esc(falta.c)}</span>` : ""}
-    </button>
+      ${chips}
+    </span>
     ${c.uv ? `<span class="cred"><b>${c.uv}</b><span>UV</span></span>` : '<span class="cred"></span>'}
-  </div>`;
+  </button>`;
 }
 
 function renderPensum(){
   const cont = document.getElementById("periodos");
   let html = "", algo = false;
 
-  for (const p of PERIODOS){
+  for (const p of periodos()){
     const todos = delPeriodo(p);
-    const mostrados = todos.filter(visible);
-    if (!mostrados.length) continue;
+    const most = todos.filter(visible);
+    if (!most.length) continue;
     algo = true;
     const a = avance(todos);
     const listo = a.ok === a.total;
     const cerrado = colapsados.has(p);
     html += `<div class="periodo ${listo ? "done" : ""}">
       <div class="phead">
-        <button data-per="${p}" data-act="colapsar" style="display:flex;align-items:center;gap:8px;flex:1 1 auto;text-align:left"
-                aria-expanded="${!cerrado}">
-          <span class="num">${ROMANO[p]} Período</span>
+        <button data-per="${p}" data-act="colapsar" style="display:flex;align-items:center;gap:8px;flex:1 1 auto" aria-expanded="${!cerrado}">
+          <span class="num">${romano(p)} Período</span>
           <span class="pbar"><i style="width:${a.total ? a.ok / a.total * 100 : 0}%"></i></span>
           <span class="count">${a.ok}/${a.total}</span>
         </button>
         <button class="markall" data-per="${p}" data-act="todo"
-                aria-label="${listo ? "Restaurar" : "Descartar"} el ${ROMANO[p]} período">${CHECK}</button>
+          aria-label="${listo ? "Restaurar" : "Descartar"} el ${romano(p)} período">${I.check}</button>
       </div>
-      ${cerrado ? "" : `<div class="clases">${mostrados.map(filaHTML).join("")}</div>`}
+      ${cerrado ? "" : `<div class="clases">${most.map(filaHTML).join("")}</div>`}
     </div>`;
   }
 
+  const etiqueta = (FILTROS.find(f => f[0] === filtro) || ["","" ])[1];
   cont.innerHTML = algo ? html : `<div class="empty">
-      <strong>Ninguna clase acá</strong>
-      <p>No hay clases que coincidan con ${busqueda ? `«${esc(busqueda)}»` : `el filtro <b>${esc(ETIQ[filtro])}</b>`}.</p>
-    </div>`;
+    <strong>Ninguna clase acá</strong>
+    <p>${busqueda ? `Nada coincide con «${esc(busqueda)}».` : `No tenés clases en <b>${esc(etiqueta)}</b>.`}</p></div>`;
+
+  const nota = document.getElementById("notaPlan");
+  nota.innerHTML = plan().nota
+    ? `<p class="note" style="margin-top:16px">${esc(plan().nota)}</p>` : "";
 }
 
 function renderLibres(){
   const l = libres();
-  const cont = document.getElementById("libres");
-  const intro = document.getElementById("libresIntro");
   const badge = document.getElementById("badgeLibres");
-
   badge.hidden = l.length === 0;
   badge.textContent = l.length;
+  const cont = document.getElementById("libres");
+  const intro = document.getElementById("libresIntro");
 
   if (!l.length){
     intro.textContent = "";
-    cont.innerHTML = `<div class="empty">
-      <strong>Nada disponible todavía</strong>
-      <p>Descartá las clases que ya cursaste y acá aparece lo que podés matricular.</p>
-    </div>`;
+    cont.innerHTML = `<div class="empty"><strong>Nada disponible todavía</strong>
+      <p>Marcá como descartadas las clases que ya aprobaste y acá aparece lo que podés matricular.</p></div>`;
     return;
   }
-  intro.textContent = `${l.length} ${l.length === 1 ? "clase tiene" : "clases tienen"} todos sus requisitos descartados.`;
-
+  intro.textContent = `${l.length} ${l.length === 1 ? "clase tiene" : "clases tienen"} todos sus requisitos aprobados.`;
   let html = "";
-  for (const p of PERIODOS){
+  for (const p of periodos()){
     const g = l.filter(c => c.p === p);
     if (!g.length) continue;
-    html += `<div class="periodo">
-      <div class="phead"><span class="num">${ROMANO[p]} Período</span>
+    html += `<div class="periodo"><div class="phead">
+        <span class="num">${romano(p)} Período</span>
         <span class="count">${g.length} ${g.length === 1 ? "clase" : "clases"}</span></div>
-      <div class="clases">${g.map(filaHTML).join("")}</div>
-    </div>`;
+      <div class="clases">${g.map(filaHTML).join("")}</div></div>`;
   }
   cont.innerHTML = html;
 }
 
-function barra(lbl, ok, total, color){
-  const pc = total ? ok / total * 100 : 0;
-  return `<div class="brow">
+const barra = (lbl, ok, total, color) => `<div class="brow">
     <span class="lbl">${esc(lbl)}</span>
-    <span class="track"><i style="width:${pc}%;background:${color}"></i></span>
-    <span class="n">${ok}/${total}</span>
-  </div>`;
-}
+    <span class="track"><i style="width:${total ? ok / total * 100 : 0}%;background:${color}"></i></span>
+    <span class="n">${ok}/${total}</span></div>`;
 
 function renderResumen(){
-  const a = avance(CURSOS);
-  const completos = PERIODOS.filter(p => { const x = avance(delPeriodo(p)); return x.ok === x.total; }).length;
+  const a = avance(cursos());
+  const comp = periodos().filter(p => { const x = avance(delPeriodo(p)); return x.ok === x.total; }).length;
 
   document.getElementById("tiles").innerHTML = [
-    ["Clases listas", a.ok, "var(--verde-ink)"],
+    ["Aprobadas", a.ok, "var(--verde-ink)"],
     ["Por llevar", a.pend, "var(--ink)"],
+    ["Cursando", a.cur + a.rep, "var(--oro)"],
+    ["Retiradas", a.ret, "var(--retira)"],
     ["UV pendientes", a.uvT - a.uvOk, "var(--ink)"],
-    ["Períodos completos", `${completos}/${PERIODOS.length}`, "var(--verde-ink)"]
+    ["Períodos completos", `${comp}/${periodos().length}`, "var(--verde-ink)"]
   ].map(([k, v, c]) => `<div class="tile"><div class="k">${k}</div><div class="v" style="color:${c}">${v}</div></div>`).join("");
 
-  document.getElementById("barPeriodos").innerHTML = PERIODOS.map(p => {
+  document.getElementById("barPeriodos").innerHTML = periodos().map(p => {
     const x = avance(delPeriodo(p));
-    return barra(`${ROMANO[p]} Período`, x.ok, x.total, "var(--verde)");
+    return barra(`${romano(p)} Período`, x.ok, x.total, "var(--verde)");
   }).join("");
 
   document.getElementById("barAreas").innerHTML = Object.entries(AREAS).map(([k, v]) => {
-    const x = avance(CURSOS.filter(c => c.a === k));
+    const x = avance(cursos().filter(c => c.a === k));
     return x.total ? barra(v.n, x.ok, x.total, v.c) : "";
+  }).join("");
+
+  /* historial por período académico */
+  const porTerm = {};
+  for (const c of cursos()){
+    const t = termDe(c);
+    if (!t) continue;
+    (porTerm[t] = porTerm[t] || []).push(c);
+  }
+  const claves = Object.keys(porTerm).sort().reverse();
+  const cont = document.getElementById("historial");
+  if (!claves.length){
+    cont.innerHTML = `<div class="card"><p class="note" style="margin:0">
+      Cuando marcés una clase te pregunta en qué período la llevaste. Acá se te arma el historial.</p></div>`;
+    return;
+  }
+  cont.innerHTML = claves.map(t => {
+    const g = porTerm[t];
+    const uv = g.filter(c => est(c) === "descartada").reduce((s, c) => s + (c.uv || 0), 0);
+    return `<div class="periodo"><div class="phead">
+        <span class="num">${esc(termLabel(t))}</span>
+        <span class="count">${g.length} ${g.length === 1 ? "clase" : "clases"} · ${uv} UV</span></div>
+      <div class="clases">${g.map(filaHTML).join("")}</div></div>`;
   }).join("");
 }
 
+function renderAjustes(){
+  /* período actual */
+  document.getElementById("termActual").innerHTML = selectorTerm(
+    termId(DB.actual.anio, DB.actual.cod), "actual");
+
+  /* lista de pénsum */
+  document.getElementById("listaPlanes").innerHTML = DB.planes.map(p => {
+    const guardado = DB.avance[p.id] || {};
+    const ok = Object.values(guardado).filter(x => x.e === "descartada").length;
+    return `<button class="row" data-plan="${esc(p.id)}">
+      <span class="radio ${p.id === DB.activo ? "on" : ""}"></span>
+      <span class="txt"><b>${esc(p.nombre)}</b>
+        <small>${esc(p.inst || "Sin institución")} · ${p.cursos.length} clases · ${ok} aprobadas</small></span>
+    </button>`;
+  }).join("");
+
+  document.getElementById("swRapido").classList.toggle("on", !!DB.rapido);
+}
+
 function renderTop(){
-  const a = avance(CURSOS);
-  const pc = Math.round(a.frac * 100);
+  const a = avance(cursos()), pc = Math.round(a.frac * 100);
   document.getElementById("topPct").textContent = pc + "%";
   document.getElementById("topRail").style.width = pc + "%";
   document.getElementById("ringVal").textContent = pc + "%";
   document.getElementById("ringArc").style.strokeDashoffset = String(201.06 * (1 - a.frac));
-  document.getElementById("heroUv").textContent = `${a.uvOk} de ${a.uvT} UV descartadas`;
-  document.getElementById("heroSub").textContent =
-    `${a.ok} ${a.ok === 1 ? "clase lista" : "clases listas"} · ${a.pend} por llevar` +
-    (a.cur ? ` · ${a.cur} cursando` : "");
+  document.getElementById("planNom").textContent = plan().nombre;
+  document.getElementById("heroInst").textContent = plan().inst || "Plan de estudio";
+  document.getElementById("heroPlan").textContent = plan().nombre;
+  document.getElementById("heroUv").textContent = `${a.uvOk} de ${a.uvT} UV aprobadas`;
+  const partes = [`${a.ok} ${a.ok === 1 ? "clase lista" : "clases listas"}`, `${a.pend} por llevar`];
+  if (a.cur + a.rep) partes.push(`${a.cur + a.rep} cursando`);
+  document.getElementById("heroSub").textContent = partes.join(" · ");
+}
+
+function renderFiltros(){
+  document.getElementById("filtros").innerHTML = FILTROS.map(([k, n]) =>
+    `<button class="chip" data-filtro="${k}" aria-pressed="${filtro === k}">${n}</button>`).join("");
 }
 
 function render(){
-  renderTop();
-  if (vista === "pensum") renderPensum();
-  renderLibres();
+  renderTop(); renderFiltros(); renderLibres();
+  if (vista === "pensum")  renderPensum();
   if (vista === "resumen") renderResumen();
+  if (vista === "ajustes") renderAjustes();
 }
 
-/* ───────── hoja de detalle ───────── */
-const sheet = document.getElementById("sheet");
-const scrim = document.getElementById("scrim");
-let abierto = null;
+/* ═══ hoja ═══ */
+const sheet = document.getElementById("sheet"), scrim = document.getElementById("scrim");
+let sheetRender = null;
 
-function abrirDetalle(c){
-  abierto = c;
+function abrirSheet(fn){ sheetRender = fn; pintarSheet(); sheet.classList.add("open"); scrim.classList.add("open"); sheet.scrollTop = 0; }
+function pintarSheet(){ if (sheetRender) sheet.innerHTML = '<div class="grip"></div>' + sheetRender(); }
+function cerrarSheet(){ sheet.classList.remove("open"); scrim.classList.remove("open"); sheetRender = null; }
+scrim.addEventListener("click", cerrarSheet);
+document.addEventListener("keydown", e => { if (e.key === "Escape") cerrarSheet(); });
+
+/* selector de período académico reutilizable */
+function selectorTerm(valor, destino){
+  const [anio, cod] = (valor || termId(DB.actual.anio, DB.actual.cod)).split("-");
+  return `<div class="termbar">
+      <div class="stepper">
+        <button data-term="${destino}" data-anio="${Number(anio) - 1}" data-cod="${cod}" aria-label="Año anterior">&#8249;</button>
+        <span class="anio">${anio}</span>
+        <button data-term="${destino}" data-anio="${Number(anio) + 1}" data-cod="${cod}" aria-label="Año siguiente">&#8250;</button>
+      </div>
+    </div>
+    <div class="termchips">${TERMINOS.map(t =>
+      `<button class="tc" data-term="${destino}" data-anio="${anio}" data-cod="${t.cod}"
+        aria-pressed="${t.cod === cod}">${t.n}</button>`).join("")}</div>`;
+}
+
+/* ── detalle de una clase ── */
+let claseAbierta = null, termElegido = null;
+
+function sheetClase(){
+  const c = porCodigo()[claseAbierta];
+  if (!c) return "";
   const e = est(c);
-  const notas = [];
+  const t = termElegido || termDe(c) || termId(DB.actual.anio, DB.actual.cod);
+  const idx = porCodigo();
   const f = c.f || "";
+  const notas = [];
   if (f.includes("i")) notas.push("Componente de investigación");
   if (f.includes("v")) notas.push("Componente de vinculación");
   if (f.includes("1")) notas.push("Al finalizarla cursás la Pasantía Profesional Supervisada I (80 hrs)");
   if (f.includes("2")) notas.push("Al finalizarla cursás la Pasantía Profesional Supervisada II (80 hrs)");
 
-  const enlace = (x) => `<div class="link ${hecha(x) ? "ok" : ""}">
-      <span class="st">${hecha(x) ? CHECK : "&#9675;"}</span>
-      <span>${esc(x.n)}<small>${esc(x.c)} · ${ROMANO[x.p]} Período</small></span>
-    </div>`;
+  const enlace = x => `<div class="link ${hecha(x) ? "ok" : ""}">
+      <span class="st">${hecha(x) ? I.check : "&#9675;"}</span>
+      <span>${esc(x.n)}<small>${esc(x.c)} · ${romano(x.p)} Período</small></span></div>`;
+
+  const opciones = ORDEN_ESTADOS.map(k => {
+    const s = ESTADOS[k];
+    return `<button class="opt" data-estado="${k}" aria-pressed="${e === k}"
+      style="color:${s.c};--sel-bg:${s.bg}">
+      <span class="ic">${s.ic}</span>
+      <span class="tx"><b>${s.n}</b><small>${s.d}</small></span>
+    </button>`;
+  }).join("");
 
   const sigs = habilita(c);
-  sheet.innerHTML = `<div class="grip"></div>
-    <div class="code">${esc(c.c)}</div>
+  return `<div class="code" style="font-size:11.5px">${esc(c.c)}</div>
     <h3>${esc(c.n)}</h3>
     <div class="pills">
-      <span class="pill">${ROMANO[c.p]} Período</span>
+      <span class="pill">${romano(c.p)} Período del plan</span>
       ${c.uv ? `<span class="pill">${c.uv} UV</span>` : ""}
-      <span class="pill" style="color:${AREAS[c.a].c}">${AREAS[c.a].n}</span>
+      <span class="pill" style="color:${(AREAS[c.a] || AREAS.otra).c}">${esc((AREAS[c.a] || AREAS.otra).n)}</span>
     </div>
-    <div class="seg" role="group" aria-label="Estado de la clase">
-      <button data-set="pendiente"  aria-pressed="${e === "pendiente"}">Pendiente</button>
-      <button data-set="cursando"   aria-pressed="${e === "cursando"}">Cursando</button>
-      <button data-set="descartada" aria-pressed="${e === "descartada"}">Descartada</button>
-    </div>
-    ${c.r.length ? `<h4>Requisitos</h4>${c.r.map(x => PORCODIGO[x]).filter(Boolean).map(enlace).join("")}` : ""}
-    ${sigs.length ? `<h4>Al descartarla habilitás</h4>${sigs.map(enlace).join("")}` : ""}
-    ${notas.length ? `<h4>Notas del plan</h4>${notas.map(t => `<div class="link"><span class="st">&#8226;</span><span>${esc(t)}</span></div>`).join("")}` : ""}
-    <button class="btn ${e === "descartada" ? "" : "prim"}" data-set="${e === "descartada" ? "pendiente" : "descartada"}" style="margin-top:18px;width:100%">
-      ${e === "descartada" ? "Restaurar clase" : "Descartar clase"}
-    </button>`;
-  sheet.classList.add("open");
-  scrim.classList.add("open");
+    <h4>¿Cómo vas con esta clase?</h4>
+    <div class="opts">${opciones}</div>
+    ${e === "pendiente" ? "" : `<h4>¿En qué período la llevaste?</h4>${selectorTerm(t, "clase")}`}
+    ${(c.r || []).length ? `<h4>Requisitos</h4>${c.r.map(x => idx[x]).filter(Boolean).map(enlace).join("")}` : ""}
+    ${sigs.length ? `<h4>Al aprobarla habilitás</h4>${sigs.map(enlace).join("")}` : ""}
+    ${notas.length ? `<h4>Notas del plan</h4>${notas.map(x => `<div class="link"><span class="st">&#8226;</span><span>${esc(x)}</span></div>`).join("")}` : ""}
+    <div class="actions">
+      <button class="btn sm" data-editar="${esc(c.c)}">Editar esta clase</button>
+      <button class="btn sm" data-cerrar="1">Listo</button>
+    </div>`;
 }
 
-function cerrarDetalle(){
-  sheet.classList.remove("open");
-  scrim.classList.remove("open");
-  abierto = null;
+function abrirClase(codigo){
+  claseAbierta = codigo;
+  termElegido = null;
+  abrirSheet(sheetClase);
 }
 
-scrim.addEventListener("click", cerrarDetalle);
-document.addEventListener("keydown", e => { if (e.key === "Escape") cerrarDetalle(); });
+/* ── lista de pénsum ── */
+function sheetPlanes(){
+  return `<h3>Mis pénsum</h3>
+    <p class="note">Cada pensum guarda su propio avance.</p>
+    <div style="margin-top:12px">${DB.planes.map(p => `
+      <button class="row" data-plan="${esc(p.id)}">
+        <span class="radio ${p.id === DB.activo ? "on" : ""}"></span>
+        <span class="txt"><b>${esc(p.nombre)}</b><small>${esc(p.inst || "")} · ${p.cursos.length} clases</small></span>
+      </button>`).join("")}</div>
+    <div class="actions">
+      <button class="btn sm" data-nuevoplan="1">Crear un pensum nuevo</button>
+      <button class="btn sm" data-cerrar="1">Listo</button>
+    </div>`;
+}
 
-sheet.addEventListener("click", e => {
-  const b = e.target.closest("[data-set]");
-  if (!b || !abierto) return;
-  const c = abierto;
-  fijar(c, b.dataset.set);
-  if (b.classList.contains("btn")) cerrarDetalle(); else abrirDetalle(c);
-});
+/* ── crear / editar pensum ── */
+let planEditando = null;
 
-/* ───────── interacción principal ───────── */
+function sheetPlanForm(){
+  const p = planEditando;
+  const nuevo = !DB.planes.some(x => x.id === p.id);
+  return `<h3>${nuevo ? "Nuevo pensum" : "Editar pensum"}</h3>
+    <div style="margin-top:14px">
+      <div class="campo"><label for="fNombre">Nombre de la carrera</label>
+        <input id="fNombre" value="${esc(p.nombre)}" placeholder="Ej. Ingeniería Industrial"></div>
+      <div class="campo"><label for="fInst">Institución o plan</label>
+        <input id="fInst" value="${esc(p.inst || "")}" placeholder="Ej. UTH · Plan 2024"></div>
+      <div class="campo"><label for="fNota">Nota (opcional)</label>
+        <textarea id="fNota" rows="2" placeholder="Algo que quieras recordar del plan">${esc(p.nota || "")}</textarea></div>
+    </div>
+    ${nuevo ? `<p class="note">Después de guardarlo le vas agregando las clases.</p>` : `
+      <h4>Clases (${p.cursos.length})</h4>
+      <div class="card tight" style="margin-bottom:12px">
+        ${p.cursos.length ? p.cursos.slice().sort((a, b) => a.p - b.p || a.c.localeCompare(b.c)).map(c => `
+          <button class="row" data-editar="${esc(c.c)}">
+            <span class="txt"><b>${esc(c.n)}</b><small>${esc(c.c)} · ${romano(c.p)} Período · ${c.uv} UV</small></span>
+            <span class="go">&#8250;</span></button>`).join("")
+          : `<p class="note" style="padding:12px 0;margin:0">Todavía no hay clases.</p>`}
+      </div>
+      <button class="btn sm" data-nuevaclase="1">Agregar una clase</button>`}
+    <div class="actions">
+      <button class="btn prim" data-guardarplan="1">Guardar</button>
+      ${!nuevo && DB.planes.length > 1 ? `<button class="btn sm danger" data-borrarplan="1">Eliminar este pensum</button>` : ""}
+      <button class="btn sm" data-cerrar="1">Cancelar</button>
+    </div>`;
+}
+
+/* ── crear / editar clase ── */
+let claseEditando = null;
+
+function sheetClaseForm(){
+  const c = claseEditando;
+  const p = planEditando || plan();
+  const nueva = !p.cursos.some(x => x.c === c.c);
+  const f = c.f || "";
+  return `<h3>${nueva ? "Nueva clase" : "Editar clase"}</h3>
+    <div style="margin-top:14px">
+      <div class="dos">
+        <div class="campo"><label for="cCod">Código</label>
+          <input id="cCod" value="${esc(c.c)}" placeholder="MAT-101" autocapitalize="characters"></div>
+        <div class="campo"><label for="cUv">UV</label>
+          <input id="cUv" type="number" inputmode="numeric" min="0" max="20" value="${c.uv}"></div>
+      </div>
+      <div class="campo"><label for="cNom">Nombre de la clase</label>
+        <input id="cNom" value="${esc(c.n)}" placeholder="Matemática I"></div>
+      <div class="dos">
+        <div class="campo"><label for="cPer">Período del plan</label>
+          <input id="cPer" type="number" inputmode="numeric" min="1" max="16" value="${c.p}"></div>
+        <div class="campo"><label for="cArea">Área</label>
+          <select id="cArea">${Object.entries(AREAS).map(([k, v]) =>
+            `<option value="${k}" ${c.a === k ? "selected" : ""}>${v.n}</option>`).join("")}</select></div>
+      </div>
+      <div class="campo"><label for="cReq">Requisitos</label>
+        <input id="cReq" value="${esc((c.r || []).join(", "))}" placeholder="MAT-101, FIS-102">
+        <div class="hint">Códigos separados por coma. Dejalo vacío si no tiene.</div></div>
+      <div class="campo"><label>Marcas del plan</label>
+        <div class="checks">
+          <label><input type="checkbox" id="cInv" ${f.includes("i") ? "checked" : ""}> Componente de investigación</label>
+          <label><input type="checkbox" id="cVin" ${f.includes("v") ? "checked" : ""}> Componente de vinculación</label>
+        </div></div>
+    </div>
+    <div class="actions">
+      <button class="btn prim" data-guardarclase="1">Guardar clase</button>
+      ${nueva ? "" : `<button class="btn sm danger" data-borrarclase="1">Eliminar clase</button>`}
+      <button class="btn sm" data-cerrar="1">Cancelar</button>
+    </div>`;
+}
+
+/* ═══ interacción ═══ */
 document.querySelector("main").addEventListener("click", e => {
   const per = e.target.closest("[data-per]");
   if (per){
@@ -739,80 +1039,280 @@ document.querySelector("main").addEventListener("click", e => {
       colapsados.has(p) ? colapsados.delete(p) : colapsados.add(p);
       render(); return;
     }
-    const todos = delPeriodo(p);
-    const listo = todos.every(hecha);
-    todos.forEach(c => { if (listo) delete estados[c.c]; else estados[c.c] = "descartada"; });
+    const todos = delPeriodo(p), listo = todos.every(hecha), a = avancePlan();
+    const t = termId(DB.actual.anio, DB.actual.cod);
+    todos.forEach(c => { if (listo) delete a[c.c]; else a[c.c] = {e:"descartada", t: (a[c.c] && a[c.c].t) || t}; });
     guardar(); render();
-    aviso(listo ? `${ROMANO[p]} Período restaurado` : `${ROMANO[p]} Período descartado`);
+    aviso(listo ? `${romano(p)} Período restaurado` : `${romano(p)} Período descartado`);
     return;
   }
-  const fila = e.target.closest(".clase");
-  if (!fila) return;
-  const c = PORCODIGO[fila.dataset.c];
-  if (!c) return;
-  const act = e.target.closest("[data-act]");
-  if (act && act.dataset.act === "toggle") alternar(c);
-  else abrirDetalle(c);
+
+  const clase = e.target.closest(".clase");
+  if (clase){
+    const cod = clase.dataset.c;
+    if (DB.rapido){
+      const c = porCodigo()[cod];
+      fijar(cod, hecha(c) ? "pendiente" : "descartada", termId(DB.actual.anio, DB.actual.cod));
+    } else abrirClase(cod);
+    return;
+  }
+
+  const chip = e.target.closest(".chip");
+  if (chip){ filtro = chip.dataset.filtro; render(); return; }
+
+  const fila = e.target.closest("[data-plan]");
+  if (fila){ DB.activo = fila.dataset.plan; guardar(); colapsados.clear(); render(); aviso(`Pensum: ${plan().nombre}`); return; }
+
+  const aj = e.target.closest("[data-ajuste]");
+  if (aj){ accionAjuste(aj.dataset.ajuste); return; }
 });
 
-document.querySelectorAll(".chip").forEach(chip => {
-  chip.addEventListener("click", () => {
-    filtro = chip.dataset.filtro;
-    document.querySelectorAll(".chip").forEach(x => x.setAttribute("aria-pressed", String(x === chip)));
-    render();
-  });
-});
+document.getElementById("q").addEventListener("input", e => { busqueda = e.target.value; render(); });
+document.getElementById("planBtn").addEventListener("click", () => abrirSheet(sheetPlanes));
 
-document.getElementById("q").addEventListener("input", e => {
-  busqueda = e.target.value; render();
+document.getElementById("rowRapido").addEventListener("click", () => {
+  DB.rapido = !DB.rapido; guardar(); renderAjustes();
+  aviso(DB.rapido ? "Modo rápido activado" : "Modo rápido desactivado");
 });
+document.getElementById("btnNuevoPlan").addEventListener("click", nuevoPlan);
+document.getElementById("btnEditarPlan").addEventListener("click", () => { planEditando = plan(); abrirSheet(sheetPlanForm); });
 
 document.querySelectorAll(".tab").forEach(tab => {
   tab.addEventListener("click", () => {
     vista = tab.dataset.view;
     document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-selected", String(t === tab)));
     document.querySelectorAll(".view").forEach(v => { v.hidden = v.id !== "view-" + vista; });
-    window.scrollTo({ top: 0, behavior: "instant" });
+    window.scrollTo({top:0, behavior:"instant"});
     render();
   });
 });
 
-/* ───────── acciones ───────── */
+/* clicks dentro de la hoja */
+sheet.addEventListener("click", e => {
+  const b = t => e.target.closest(`[data-${t}]`);
+
+  if (b("cerrar")) { cerrarSheet(); return; }
+
+  const pl = b("plan");
+  if (pl){
+    DB.activo = pl.dataset.plan; guardar(); colapsados.clear(); cerrarSheet(); render();
+    aviso(`Pensum: ${plan().nombre}`);
+    return;
+  }
+
+  const st = b("estado");
+  if (st){
+    const c = porCodigo()[claseAbierta];
+    const nuevo = st.dataset.estado;
+    const t = nuevo === "pendiente" ? null : (termElegido || termDe(c) || termId(DB.actual.anio, DB.actual.cod));
+    fijar(claseAbierta, nuevo, t);
+    pintarSheet();
+    return;
+  }
+
+  const tm = b("term");
+  if (tm){
+    const anio = Number(tm.dataset.anio), cod = tm.dataset.cod;
+    if (tm.dataset.term === "actual"){
+      DB.actual = {anio, cod}; guardar(); renderAjustes();
+    } else {
+      termElegido = termId(anio, cod);
+      const c = porCodigo()[claseAbierta];
+      if (c && est(c) !== "pendiente") fijar(claseAbierta, est(c), termElegido);
+      pintarSheet();
+    }
+    return;
+  }
+
+  if (b("nuevoplan")) { nuevoPlan(); return; }
+
+  const ed = b("editar");
+  if (ed){
+    planEditando = plan();
+    claseEditando = clonar(porCodigo()[ed.dataset.editar]);
+    abrirSheet(sheetClaseForm);
+    return;
+  }
+
+  if (b("nuevaclase")){
+    claseEditando = {c:"", n:"", uv:4, p:1, a:"desarrollo", r:[], f:""};
+    abrirSheet(sheetClaseForm);
+    return;
+  }
+
+  if (b("guardarplan")) { guardarPlan(); return; }
+  if (b("borrarplan"))  { borrarPlan(); return; }
+  if (b("guardarclase")){ guardarClase(); return; }
+  if (b("borrarclase")) { borrarClase(); return; }
+});
+
+/* período actual también se toca desde la vista de ajustes */
+document.getElementById("view-ajustes").addEventListener("click", e => {
+  const tm = e.target.closest('[data-term="actual"]');
+  if (!tm) return;
+  DB.actual = {anio:Number(tm.dataset.anio), cod:tm.dataset.cod};
+  guardar(); renderAjustes();
+});
+
+/* ═══ acciones de pénsum ═══ */
+function idNuevo(nombre){
+  const base = (nombre || "pensum").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 24) || "pensum";
+  let id = base, n = 2;
+  while (DB.planes.some(p => p.id === id)) id = `${base}-${n++}`;
+  return id;
+}
+
+function nuevoPlan(){
+  planEditando = {id:"", nombre:"", inst:"", nota:"", cursos:[]};
+  abrirSheet(sheetPlanForm);
+}
+
+function guardarPlan(){
+  const nombre = document.getElementById("fNombre").value.trim();
+  if (!nombre){ aviso("Ponele un nombre a la carrera"); return; }
+  const p = planEditando;
+  p.nombre = nombre;
+  p.inst = document.getElementById("fInst").value.trim();
+  p.nota = document.getElementById("fNota").value.trim();
+
+  if (!DB.planes.some(x => x.id === p.id)){
+    p.id = idNuevo(nombre);
+    DB.planes.push(p);
+    DB.activo = p.id;
+    guardar(); cerrarSheet(); colapsados.clear(); render();
+    aviso("Pensum creado — ahora agregale clases");
+    planEditando = p;
+    abrirSheet(sheetPlanForm);
+    return;
+  }
+  guardar(); cerrarSheet(); render(); aviso("Pensum guardado");
+}
+
+function borrarPlan(){
+  const p = planEditando;
+  if (DB.planes.length < 2){ aviso("Tiene que quedar al menos un pensum"); return; }
+  if (!confirm(`¿Eliminar «${p.nombre}» y todo su avance?`)) return;
+  DB.planes = DB.planes.filter(x => x.id !== p.id);
+  delete DB.avance[p.id];
+  if (DB.activo === p.id) DB.activo = DB.planes[0].id;
+  guardar(); cerrarSheet(); colapsados.clear(); render(); aviso("Pensum eliminado");
+}
+
+function guardarClase(){
+  const p = planEditando || plan();
+  const cod = document.getElementById("cCod").value.trim().toUpperCase();
+  const nom = document.getElementById("cNom").value.trim();
+  if (!cod){ aviso("Falta el código"); return; }
+  if (!nom){ aviso("Falta el nombre"); return; }
+
+  const anterior = claseEditando.c;
+  if (cod !== anterior && p.cursos.some(x => x.c === cod)){
+    aviso(`Ya existe una clase con el código ${cod}`); return;
+  }
+
+  let f = "";
+  if (document.getElementById("cInv").checked) f += "i";
+  if (document.getElementById("cVin").checked) f += "v";
+  const viejo = (claseEditando.f || "").replace(/[iv]/g, "");
+
+  const nueva = {
+    c: cod, n: nom,
+    uv: Math.max(0, Number(document.getElementById("cUv").value) || 0),
+    p: Math.max(1, Number(document.getElementById("cPer").value) || 1),
+    a: document.getElementById("cArea").value,
+    r: document.getElementById("cReq").value.split(",").map(s => s.trim().toUpperCase()).filter(Boolean),
+    f: f + viejo
+  };
+
+  const i = p.cursos.findIndex(x => x.c === anterior);
+  if (i >= 0){
+    p.cursos[i] = nueva;
+    if (cod !== anterior){
+      /* arrastrar el avance y los requisitos que apuntaban al código viejo */
+      const a = DB.avance[p.id] || {};
+      if (a[anterior]){ a[cod] = a[anterior]; delete a[anterior]; }
+      p.cursos.forEach(x => { x.r = (x.r || []).map(y => y === anterior ? cod : y); });
+    }
+  } else p.cursos.push(nueva);
+
+  const eraNueva = i < 0;
+  guardar(); cerrarSheet(); render();
+  aviso(eraNueva ? `${cod} agregada` : "Clase guardada");
+  if (eraNueva){ planEditando = p; abrirSheet(sheetPlanForm); }
+}
+
+function borrarClase(){
+  const p = planEditando || plan();
+  const cod = claseEditando.c;
+  if (!confirm(`¿Eliminar ${cod}?`)) return;
+  p.cursos = p.cursos.filter(x => x.c !== cod);
+  p.cursos.forEach(x => { x.r = (x.r || []).filter(y => y !== cod); });
+  const a = DB.avance[p.id]; if (a) delete a[cod];
+  guardar(); cerrarSheet(); render(); aviso("Clase eliminada");
+  planEditando = p; abrirSheet(sheetPlanForm);
+}
+
+/* ═══ ajustes ═══ */
+async function accionAjuste(cual){
+  if (cual === "reiniciar"){
+    if (!confirm(`¿Reiniciar «${plan().nombre}»? Todas las clases vuelven a pendiente.`)) return;
+    DB.avance[plan().id] = {}; guardar(); render(); aviso("Pensum reiniciado");
+    return;
+  }
+  if (cual === "compartir"){
+    const a = avance(cursos());
+    const l = [`${plan().nombre} — ${plan().inst || ""}`.trim(),
+      `Avance: ${Math.round(a.frac * 100)}% · ${a.uvOk}/${a.uvT} UV · ${a.ok}/${a.total} clases`, ""];
+    for (const p of periodos()){
+      const g = delPeriodo(p).filter(hecha);
+      if (!g.length) continue;
+      l.push(`${romano(p)} Período:`);
+      g.forEach(c => l.push(`  ✓ ${c.c} ${c.n}${termDe(c) ? ` (${termCorto(termDe(c))})` : ""}`));
+    }
+    await compartir(l.join("\n"), "Resumen copiado");
+    return;
+  }
+  if (cual === "respaldo"){
+    await compartir(JSON.stringify(DB), "Respaldo copiado — guardalo en tus notas");
+    return;
+  }
+  if (cual === "restaurar"){
+    const txt = prompt("Pegá acá el código del respaldo:");
+    if (!txt) return;
+    try {
+      const d = JSON.parse(txt);
+      if (!d || !Array.isArray(d.planes) || !d.planes.length) throw new Error("formato");
+      if (!confirm("Esto reemplaza todo lo que tenés en este teléfono. ¿Seguir?")) return;
+      DB = d; DB.avance = DB.avance || {}; DB.actual = DB.actual || {anio:anioHoy, cod:"I"};
+      if (!DB.planes.some(p => p.id === DB.activo)) DB.activo = DB.planes[0].id;
+      guardar(); colapsados.clear(); render(); aviso("Respaldo restaurado");
+    } catch (e) { aviso("Ese código no se pudo leer"); }
+  }
+}
+
+async function compartir(texto, exito){
+  try {
+    if (navigator.share){ await navigator.share({text: texto}); return; }
+    await navigator.clipboard.writeText(texto);
+    aviso(exito);
+  } catch (e) {
+    if (e && e.name === "AbortError") return;
+    prompt("Copiá este texto:", texto);
+  }
+}
+
+/* ═══ avisos ═══ */
 const toast = document.getElementById("toast");
 let toastT;
 function aviso(msg){
   toast.textContent = msg;
   toast.classList.add("show");
   clearTimeout(toastT);
-  toastT = setTimeout(() => toast.classList.remove("show"), 1900);
+  toastT = setTimeout(() => toast.classList.remove("show"), 2100);
 }
 
-document.getElementById("btnReset").addEventListener("click", () => {
-  if (!confirm("¿Reiniciar el pensum? Todas las clases vuelven a pendiente.")) return;
-  estados = {}; guardar(); render(); aviso("Pensum reiniciado");
-});
-
-document.getElementById("btnShare").addEventListener("click", async () => {
-  const a = avance(CURSOS);
-  const lineas = [
-    "Ingeniería en Computación — UTH",
-    `Avance: ${Math.round(a.frac * 100)}% · ${a.uvOk}/${a.uvT} UV · ${a.ok}/${a.total} clases`,
-    ""
-  ];
-  for (const p of PERIODOS){
-    const g = delPeriodo(p).filter(hecha);
-    if (!g.length) continue;
-    lineas.push(`${ROMANO[p]} Período:`);
-    g.forEach(c => lineas.push(`  ✓ ${c.c} ${c.n}`));
-  }
-  const texto = lineas.join("\n");
-  try {
-    if (navigator.share) { await navigator.share({ title: "Mi Pensum", text: texto }); return; }
-    await navigator.clipboard.writeText(texto);
-    aviso("Resumen copiado");
-  } catch (e) { aviso("No se pudo compartir"); }
-});
-
+cargar();
 render();
 </script>
 

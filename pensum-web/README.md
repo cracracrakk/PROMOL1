@@ -44,16 +44,35 @@ pensum-web/
 ├── icon-192.png · icon-512.png · apple-touch-icon.png
 ```
 
-## Editar el plan
+## Qué hace
 
-Dentro de `index.html`, buscá la constante `CURSOS`. Cada clase es una línea:
+- **Cinco estados por clase**, y tocar una clase ya no la marca de una: abre un
+  selector con Descartada (aprobada), Cursando, Repitiendo, Retirada y Pendiente.
+  Quien prefiera el toque directo lo activa en *Ajustes → Modo rápido*.
+- **Período académico por clase.** Tres períodos al año más el intensivo. Cada clase
+  guarda en cuál la llevaste y el resumen arma el historial por período.
+- **Varios pénsum.** Viene con Ingeniería en Computación y podés crear otras carreras
+  desde *Ajustes → Crear un pensum nuevo*, agregando las clases a mano. Cada pensum
+  lleva su propio avance.
+- **Puedo llevar**: las clases pendientes o retiradas con todos sus requisitos aprobados.
+- **Respaldo**: copia un código con todo y lo pegás en otro teléfono.
+
+## Editar el plan que viene de fábrica
+
+Se puede desde la app misma (*Ajustes → Editar el pensum activo*). Si preferís tocar el
+código, dentro de `index.html` está la constante `FABRICA`. Cada clase es una línea:
 
 ```js
 {c:"BDE-0606", n:"Base de Datos I", uv:4, p:4, a:"desarrollo", r:["EDE-0605"]},
 ```
 
-`c` código · `n` nombre · `uv` unidades valorativas · `p` período · `a` área ·
+`c` código · `n` nombre · `uv` unidades valorativas · `p` período del plan · `a` área ·
 `r` requisitos · `f` marcas (`i` investigación, `v` vinculación, `1`/`2` pasantías).
 
-Los mismos datos, en Swift, están en `ios/PensumUTH/Models/PensumData.swift`. Si cambiás
-uno, cambiá el otro para que las dos versiones coincidan.
+Ojo: `FABRICA` solo se usa la primera vez que alguien abre la app. Después trabaja sobre
+lo que ya tiene guardado en su teléfono.
+
+## Nota sobre la app nativa de iOS
+
+La versión Swift en `ios/` quedó en la primera entrega: tiene tres estados y un solo
+pensum. Esta versión web es la que está al día.
