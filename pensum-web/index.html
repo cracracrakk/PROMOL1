@@ -313,6 +313,16 @@ nav{
 .checks label{display:flex;align-items:center;gap:9px;font-size:13.5px}
 .checks input{width:18px;height:18px;accent-color:var(--verde)}
 
+.alerta{
+  display:flex;gap:10px;align-items:flex-start;background:var(--ambar-soft);color:var(--ambar);
+  border:1px solid color-mix(in srgb,var(--ambar) 35%,transparent);border-radius:12px;
+  padding:12px 14px;margin-bottom:12px;font-size:13px;line-height:1.45
+}
+.alerta b{display:block;margin-bottom:2px;font-size:13.5px}
+.alerta button{text-decoration:underline;font-weight:600;color:inherit;margin-top:6px}
+.estado-guardado{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink-3);padding:10px 0}
+.estado-guardado .luz{width:8px;height:8px;border-radius:50%;flex:0 0 auto;background:var(--verde)}
+.estado-guardado.mal .luz{background:var(--rojo)}
 .toast{
   position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 78px);transform:translate(-50%,14px);
   background:var(--ink);color:var(--ground);font-size:13px;font-weight:500;padding:9px 16px;border-radius:99px;
@@ -339,6 +349,8 @@ nav{
 </div>
 
 <main>
+  <div id="alertaGuardado"></div>
+
   <div class="view" id="view-pensum">
     <div class="hero">
       <div class="ring">
@@ -417,6 +429,9 @@ nav{
       <button class="row" data-ajuste="restaurar"><div class="txt"><b>Restaurar respaldo</b><small>Pegá el código en otro teléfono</small></div><span class="go">&#8250;</span></button>
       <button class="row" data-ajuste="reiniciar"><div class="txt"><b style="color:var(--rojo)">Reiniciar este pensum</b><small>Todas las clases vuelven a pendiente</small></div><span class="go">&#8250;</span></button>
     </div>
+
+    <h2 class="sec">Dónde se guarda</h2>
+    <div class="card"><div id="estadoGuardado"></div></div>
 
     <h2 class="sec">Simbología</h2>
     <div class="card legend">
@@ -607,9 +622,57 @@ function cargar(){
   guardar();
 }
 
+/* ¿Este navegador realmente deja guardar? Safari lo bloquea en modo privado
+   y dentro de algunos visores incrustados, y hasta ahora fallaba en silencio. */
+let almacenaOK = true;
+let motivoFallo = "";
+
+function probarAlmacenamiento(){
+  try {
+    const t = "__prueba__";
+    localStorage.setItem(t, "1");
+    const leido = localStorage.getItem(t);
+    localStorage.removeItem(t);
+    almacenaOK = leido === "1";
+    if (!almacenaOK) motivoFallo = "El navegador acepta escribir pero no devuelve lo guardado.";
+  } catch (e) {
+    almacenaOK = false;
+    motivoFallo = (e && e.name === "QuotaExceededError")
+      ? "No queda espacio en el navegador."
+      : "El navegador tiene bloqueado el almacenamiento de este sitio.";
+  }
+  return almacenaOK;
+}
+
+/* Le pide al navegador que no borre estos datos cuando ande escaso de espacio.
+   En iOS lo concede sobre todo si la app está en la pantalla de inicio. */
+function pedirPersistencia(){
+  try {
+    if (navigator.storage && navigator.storage.persist) navigator.storage.persist();
+  } catch (e) {}
+}
+
 function guardar(){
+  if (!almacenaOK) { pintarAlerta(); return; }
   try { localStorage.setItem(CLAVE, JSON.stringify(DB)); }
-  catch (e) { aviso("No se pudo guardar: el almacenamiento está lleno"); }
+  catch (e) {
+    almacenaOK = false;
+    motivoFallo = (e && e.name === "QuotaExceededError")
+      ? "No queda espacio en el navegador."
+      : "El navegador dejó de permitir guardar.";
+    pintarAlerta();
+  }
+}
+
+function pintarAlerta(){
+  const cont = document.getElementById("alertaGuardado");
+  if (!cont) return;
+  cont.innerHTML = almacenaOK ? "" : `<div class="alerta">
+    <span style="font-size:16px;line-height:1.1">&#9888;</span>
+    <span><b>Tu avance no se está guardando</b>
+      ${esc(motivoFallo)} Lo que marqués se pierde al cerrar.
+      Instalá la app desde Safari con «Añadir a pantalla de inicio», o copiá tu respaldo antes de salir.
+      <button data-ajuste="respaldo">Copiar respaldo ahora</button></span></div>`;
 }
 
 /* ═══ acceso al plan activo ═══ */
@@ -833,6 +896,13 @@ function renderAjustes(){
   }).join("");
 
   document.getElementById("swRapido").classList.toggle("on", !!DB.rapido);
+
+  const eg = document.getElementById("estadoGuardado");
+  if (eg) eg.innerHTML = `<div class="estado-guardado ${almacenaOK ? "" : "mal"}">
+      <span class="luz"></span>
+      <span>${almacenaOK
+        ? "Guardando en este teléfono. Nadie más ve tu avance, y tampoco se sincroniza con otros dispositivos."
+        : esc(motivoFallo) + " Nada de lo que marqués se está guardando."}</span></div>`;
 }
 
 function renderTop(){
@@ -1065,6 +1135,11 @@ document.querySelector("main").addEventListener("click", e => {
 
   const aj = e.target.closest("[data-ajuste]");
   if (aj){ accionAjuste(aj.dataset.ajuste); return; }
+});
+
+document.getElementById("alertaGuardado").addEventListener("click", e => {
+  const b = e.target.closest("[data-ajuste]");
+  if (b) accionAjuste(b.dataset.ajuste);
 });
 
 document.getElementById("q").addEventListener("input", e => { busqueda = e.target.value; render(); });
@@ -1312,8 +1387,17 @@ function aviso(msg){
   toastT = setTimeout(() => toast.classList.remove("show"), 2100);
 }
 
+probarAlmacenamiento();
+pedirPersistencia();
 cargar();
 render();
+pintarAlerta();
+
+/* Safari a veces mata la pestaña sin avisar: reguardamos al ocultarla. */
+addEventListener("pagehide", () => { if (almacenaOK) guardar(); });
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "hidden" && almacenaOK) guardar();
+});
 </script>
 
 <script>
