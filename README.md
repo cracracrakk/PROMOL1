@@ -216,3 +216,11 @@ Todo se aplica inmediatamente a la web pública y al panel.
 ## 📝 Licencia
 
 Producto comercial. Cada licencia se vende por instalación / cliente.
+
+---
+
+## 📱 App iOS: Mi Pensum
+
+En `ios/` vive un proyecto aparte, sin relación con el sistema de spa: una app nativa
+SwiftUI para llevar el plan de estudio de Ingeniería en Computación (UTH) y descartar
+las clases ya cursadas. Ver [`ios/README.md`](ios/README.md).

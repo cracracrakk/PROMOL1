@@ -7,3 +7,8 @@
 Thumbs.db
 .idea/
 .vscode/
+
+# Xcode
+ios/**/xcuserdata/
+ios/**/*.xcuserstate
+ios/**/DerivedData/
