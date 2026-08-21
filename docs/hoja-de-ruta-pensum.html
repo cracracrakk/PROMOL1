@@ -1,0 +1,473 @@
+<title>Hoja de ruta de Mi Pensum</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+
+<style>
+:root{
+  --ground:#F3F5F1; --surface:#FFFFFF; --surface-2:#E9EDE6; --line:#DBE0D6;
+  --ink:#141A16; --ink-2:#4B564E; --ink-3:#7E887F;
+  --verde:#1B7A46; --verde-ink:#146038; --verde-soft:#E2EFE7;
+  --oro:#B98A0E; --oro-soft:#F6ECD2;
+  --rojo:#B3372F; --rojo-soft:#F8E6E4;
+  --sobre-verde:#FFFFFF;
+  --dg-ok:#1B7A46; --dg-mal:#B3372F;
+  --shadow:0 1px 2px rgba(20,26,22,.05), 0 10px 28px -14px rgba(20,26,22,.22);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0E1210; --surface:#171D19; --surface-2:#202721; --line:#2B332D;
+    --ink:#E9EEE9; --ink-2:#A5B0A7; --ink-3:#78837A;
+    --verde:#57C285; --verde-ink:#7BD3A0; --verde-soft:#16291F;
+    --oro:#E0B855; --oro-soft:#2A2314;
+    --rojo:#E2766C; --rojo-soft:#2A1815;
+    --sobre-verde:#08120C;
+    --dg-ok:#5FCB8C; --dg-mal:#F08C80;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -16px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0E1210; --surface:#171D19; --surface-2:#202721; --line:#2B332D;
+  --ink:#E9EEE9; --ink-2:#A5B0A7; --ink-3:#78837A;
+  --verde:#57C285; --verde-ink:#7BD3A0; --verde-soft:#16291F;
+  --oro:#E0B855; --oro-soft:#2A2314;
+  --rojo:#E2766C; --rojo-soft:#2A1815;
+  --sobre-verde:#08120C;
+  --dg-ok:#5FCB8C; --dg-mal:#F08C80;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -16px rgba(0,0,0,.8);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--ground);color:var(--ink);
+  font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:760px;margin:0 auto;padding:40px 22px 80px}
+
+header{border-bottom:2px solid var(--ink);padding-bottom:22px;margin-bottom:34px}
+.eyebrow{
+  font-family:"IBM Plex Sans Condensed",sans-serif;font-size:11px;font-weight:600;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--verde-ink)
+}
+h1{font-size:clamp(30px,6vw,42px);line-height:1.08;margin:8px 0 10px;font-weight:700;letter-spacing:-.02em;text-wrap:balance}
+.lede{font-size:17px;color:var(--ink-2);margin:0;max-width:60ch}
+.meta{
+  display:flex;flex-wrap:wrap;gap:14px;margin-top:18px;
+  font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink-3)
+}
+
+h2{
+  font-size:13px;font-family:"IBM Plex Sans Condensed",sans-serif;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);
+  margin:52px 0 16px;padding-bottom:8px;border-bottom:1px solid var(--line)
+}
+h3{font-size:19px;font-weight:700;margin:30px 0 8px;letter-spacing:-.01em;text-wrap:balance}
+p{margin:0 0 14px;max-width:66ch}
+a{color:var(--verde-ink)}
+strong{font-weight:600}
+code{
+  font-family:"IBM Plex Mono",monospace;font-size:.88em;background:var(--surface-2);
+  padding:1px 5px;border-radius:5px
+}
+
+/* punto de mejora */
+.punto{
+  background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  padding:20px;margin-bottom:14px;box-shadow:var(--shadow)
+}
+.punto-cab{display:flex;align-items:baseline;gap:11px;margin-bottom:8px}
+.n{
+  font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:600;color:var(--verde-ink);
+  background:var(--verde-soft);padding:2px 8px;border-radius:6px;flex:0 0 auto
+}
+.punto h3{margin:0;font-size:18px}
+.punto p{font-size:15px;margin-bottom:10px}
+.punto p:last-child{margin-bottom:0}
+.tag{
+  display:inline-block;font-size:11px;font-weight:600;letter-spacing:.04em;
+  padding:3px 9px;border-radius:99px;margin-left:auto;flex:0 0 auto;white-space:nowrap
+}
+.tag.bug{background:var(--rojo-soft);color:var(--rojo)}
+.tag.listo{background:var(--verde-soft);color:var(--verde-ink)}
+.tag.nuevo{background:var(--oro-soft);color:var(--oro)}
+
+.porque{
+  border-left:3px solid var(--rojo);background:var(--rojo-soft);
+  padding:13px 16px;border-radius:0 10px 10px 0;margin:14px 0;font-size:14.5px
+}
+.porque b{display:block;margin-bottom:4px}
+.porque ul{margin:6px 0 0;padding-left:19px}
+.porque li{margin-bottom:5px}
+
+figure{margin:26px 0;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 16px 14px}
+figure svg{display:block;width:100%;max-width:100%;height:auto;color:var(--ink)}
+.dg-ok-s{stroke:var(--dg-ok);color:var(--dg-ok)}
+.dg-ok-t{fill:var(--dg-ok)}
+.dg-mal-s{stroke:var(--dg-mal);color:var(--dg-mal)}
+.dg-mal-t,.dg-mal-f{fill:var(--dg-mal)}
+figcaption{
+  font-size:12.5px;color:var(--ink-3);margin-top:12px;padding-top:11px;
+  border-top:1px solid var(--line);line-height:1.5
+}
+
+/* fases */
+.fase{display:flex;gap:16px;padding:20px 0;border-bottom:1px solid var(--line)}
+.fase:last-child{border-bottom:0}
+.fase .idx{
+  flex:0 0 42px;height:42px;border-radius:11px;background:var(--ink);color:var(--ground);
+  display:grid;place-items:center;font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:15px
+}
+.fase.ahora .idx{background:var(--verde);color:var(--sobre-verde)}
+.fase h3{margin:2px 0 6px;font-size:17.5px}
+.fase p{font-size:14.5px;margin-bottom:9px}
+.fase ul{margin:0;padding-left:19px;font-size:14.5px;color:var(--ink-2)}
+.fase li{margin-bottom:4px}
+.fase li::marker{color:var(--verde)}
+
+.tabla-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:18px 0}
+table{border-collapse:collapse;width:100%;min-width:520px;font-size:14px}
+th,td{text-align:left;padding:10px 13px;border-bottom:1px solid var(--line);vertical-align:top}
+th{
+  font-family:"IBM Plex Sans Condensed",sans-serif;font-size:11px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-3);font-weight:600
+}
+td code{background:none;padding:0;color:var(--verde-ink);font-weight:600}
+
+.nota{
+  background:var(--oro-soft);border-radius:12px;padding:16px 18px;margin:22px 0;font-size:14.5px;
+  border:1px solid color-mix(in srgb,var(--oro) 30%,transparent)
+}
+.nota b{display:block;margin-bottom:5px}
+.nota p{margin:0;max-width:none}
+.nota p+p{margin-top:9px}
+
+.cierre{
+  margin-top:44px;padding:22px;border-radius:14px;background:var(--surface);
+  border:1px solid var(--line);box-shadow:var(--shadow)
+}
+.cierre h3{margin-top:0}
+.cierre ol{margin:0;padding-left:20px;font-size:15px}
+.cierre li{margin-bottom:8px}
+footer{margin-top:46px;padding-top:18px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink-3)}
+@media (prefers-reduced-motion:reduce){*{transition-duration:.01ms !important}}
+</style>
+
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">Mi Pensum · Ingeniería en Computación UTH</div>
+  <h1>Hoja de ruta</h1>
+  <p class="lede">Dónde está la app hoy, por qué se pierde el avance y qué hace falta
+     para que cualquier estudiante entre con su cuenta, lleve su horario y no vuelva a
+     empezar de cero.</p>
+  <div class="meta">
+    <span>21 agosto 2026</span><span>·</span>
+    <span>Hosting PHP + MySQL</span><span>·</span>
+    <span>Registro con correo y contraseña</span>
+  </div>
+</header>
+
+<h2>Dónde estamos</h2>
+
+<p>La app web ya hace lo suyo: el plan completo por período, cinco estados por clase,
+el período académico en que la llevaste, varios pénsum con editor propio, la lista de lo
+que podés matricular y el resumen por área. Se instala en la pantalla de inicio desde Safari.</p>
+
+<p>Lo que <em>no</em> tiene es memoria confiable ni identidad. Todo vive en el navegador
+del teléfono, sin nombre y sin respaldo. De ahí salen los tres problemas que siguen.</p>
+
+<h2>El problema de fondo</h2>
+
+<figure>
+  <svg viewBox="0 0 720 400" role="img" aria-label="Hoy el avance se guarda en el navegador del teléfono y se pierde; con cuentas viaja a una base de datos en el hosting y se recupera desde cualquier dispositivo.">
+    <defs>
+      <marker id="pf" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0 0 L10 5 L0 10 z" fill="currentColor"/>
+      </marker>
+      <marker id="pr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0 0 L10 5 L0 10 z" class="dg-mal-f"/>
+      </marker>
+    </defs>
+
+    <text x="24" y="26" font-size="12" font-weight="700" letter-spacing="1.6" fill="currentColor">HOY</text>
+    <line x1="24" y1="36" x2="696" y2="36" stroke="currentColor" stroke-width="1" opacity=".2"/>
+
+    <rect x="24" y="56" width="112" height="52" rx="9" fill="none" stroke="currentColor" stroke-width="1.6"/>
+    <text x="80" y="80" font-size="12.5" text-anchor="middle" fill="currentColor">iPhone</text>
+    <text x="80" y="96" font-size="10.5" text-anchor="middle" fill="currentColor" opacity=".6">Safari</text>
+
+    <line x1="140" y1="82" x2="182" y2="82" stroke="currentColor" stroke-width="1.6" marker-end="url(#pf)"/>
+
+    <rect x="188" y="56" width="156" height="52" rx="9" fill="none" stroke="currentColor" stroke-width="1.6"/>
+    <text x="266" y="80" font-size="12.5" text-anchor="middle" fill="currentColor">Mi Pensum</text>
+    <text x="266" y="96" font-size="10.5" text-anchor="middle" fill="currentColor" opacity=".6">un solo archivo HTML</text>
+
+    <line x1="348" y1="82" x2="398" y2="82" class="dg-mal-s" stroke-width="1.6" marker-end="url(#pr)"/>
+    <text x="373" y="72" font-size="10" text-anchor="middle" class="dg-mal-t">guarda</text>
+
+    <rect x="404" y="56" width="200" height="52" rx="9" fill="none" class="dg-mal-s" stroke-width="1.6" stroke-dasharray="5 4"/>
+    <text x="504" y="80" font-size="12.5" text-anchor="middle" class="dg-mal-t">localStorage</text>
+    <text x="504" y="96" font-size="10.5" text-anchor="middle" class="dg-mal-t" opacity=".8">de ese navegador, ese teléfono</text>
+
+    <text x="24" y="140" font-size="11.5" class="dg-mal-t">Safari lo borra a los 7 días sin abrir la app · en otro teléfono aparece vacío · no hay de dónde recuperarlo</text>
+
+    <text x="24" y="206" font-size="12" font-weight="700" letter-spacing="1.6" fill="currentColor">CON CUENTAS</text>
+    <line x1="24" y1="216" x2="696" y2="216" stroke="currentColor" stroke-width="1" opacity=".2"/>
+
+    <rect x="24" y="236" width="112" height="44" rx="9" fill="none" stroke="currentColor" stroke-width="1.6"/>
+    <text x="80" y="263" font-size="12.5" text-anchor="middle" fill="currentColor">iPhone</text>
+    <rect x="24" y="292" width="112" height="44" rx="9" fill="none" stroke="currentColor" stroke-width="1.6"/>
+    <text x="80" y="319" font-size="12.5" text-anchor="middle" fill="currentColor">PC o tablet</text>
+
+    <path d="M140 258 H164 V282" fill="none" stroke="currentColor" stroke-width="1.6"/>
+    <path d="M140 314 H164 V290" fill="none" stroke="currentColor" stroke-width="1.6"/>
+    <line x1="164" y1="286" x2="182" y2="286" stroke="currentColor" stroke-width="1.6" marker-end="url(#pf)"/>
+
+    <rect x="188" y="260" width="156" height="52" rx="9" fill="none" stroke="currentColor" stroke-width="1.6"/>
+    <text x="266" y="284" font-size="12.5" text-anchor="middle" fill="currentColor">Mi Pensum</text>
+    <text x="266" y="300" font-size="10.5" text-anchor="middle" fill="currentColor" opacity=".6">con sesión iniciada</text>
+
+    <line x1="348" y1="286" x2="398" y2="286" class="dg-ok-s" stroke-width="2" marker-end="url(#pf)"/>
+    <text x="373" y="276" font-size="10" text-anchor="middle" class="dg-ok-t">HTTPS</text>
+
+    <rect x="404" y="260" width="150" height="52" rx="9" fill="none" class="dg-ok-s" stroke-width="2"/>
+    <text x="479" y="284" font-size="12.5" text-anchor="middle" class="dg-ok-t">API en PHP</text>
+    <text x="479" y="300" font-size="10.5" text-anchor="middle" class="dg-ok-t" opacity=".85">tu hosting</text>
+
+    <line x1="558" y1="286" x2="586" y2="286" class="dg-ok-s" stroke-width="2" marker-end="url(#pf)"/>
+
+    <rect x="592" y="260" width="104" height="52" rx="9" fill="none" class="dg-ok-s" stroke-width="2"/>
+    <text x="644" y="284" font-size="12.5" text-anchor="middle" class="dg-ok-t">MySQL</text>
+    <text x="644" y="300" font-size="10.5" text-anchor="middle" class="dg-ok-t" opacity=".85">tu avance</text>
+
+    <text x="24" y="364" font-size="11.5" fill="currentColor" opacity=".75">El teléfono sigue guardando una copia local para trabajar sin internet; al reconectar, sincroniza.</text>
+  </svg>
+  <figcaption>La única diferencia que importa: hoy el avance termina en un almacén que el
+  navegador puede borrar cuando quiera y que nadie más puede leer. Con cuentas termina en
+  tu base de datos, y el teléfono pasa a ser una copia.</figcaption>
+</figure>
+
+<h2>Los puntos abiertos</h2>
+
+<div class="punto">
+  <div class="punto-cab"><span class="n">01</span><h3>El avance se pierde</h3><span class="tag bug">Bug</span></div>
+  <p>Confirmado, y no es descuido tuyo. Hay tres causas posibles y probablemente te pegaron dos:</p>
+  <div class="porque">
+    <b>Por qué pasa</b>
+    <ul>
+      <li>Safari borra el almacenamiento de un sitio a los <strong>7 días sin abrirlo</strong>. Es su política antirastreo y aplica aunque vos hayás guardado datos.</li>
+      <li>La app agregada a la pantalla de inicio tiene un <strong>almacén distinto</strong> al de Safari. Lo que marcaste en el navegador no aparece en la app instalada, y al revés.</li>
+      <li>Algunos visores incrustados <strong>bloquean el almacenamiento</strong> por seguridad. Ahí la app escribía y fallaba sin decir nada.</li>
+    </ul>
+  </div>
+  <p><strong>Ya corregido a medias:</strong> la app prueba si puede guardar apenas abre y,
+     si no puede, te avisa arriba con un aviso amarillo en vez de fingir que guardó.
+     También le pide permiso al navegador para no descartar los datos.</p>
+  <p><strong>La solución de verdad</strong> es el punto 02: mientras el avance viva solo en
+     el teléfono, cualquiera de las tres causas te lo puede borrar.</p>
+</div>
+
+<div class="punto">
+  <div class="punto-cab"><span class="n">02</span><h3>Cuenta por estudiante</h3><span class="tag nuevo">Fase 1</span></div>
+  <p>Aclaro algo primero, porque cambia la urgencia: <strong>si compartís el link, cada
+     quien tendría su propio avance</strong>, no una cuenta compartida. El almacenamiento del
+     navegador es por teléfono, no global. Nadie vería lo tuyo.</p>
+  <p>Pero el problema real sigue: sin cuenta no hay forma de recuperar tu avance si cambiás
+     de teléfono, si Safari lo borra, o si querés verlo desde la computadora. Y sin identidad
+     tampoco se puede construir nada encima —compartir pénsum, comparar avance con un compañero,
+     que un coordinador vea algo.</p>
+  <p>Registro con <strong>correo y contraseña</strong>, contraseñas con <code>password_hash()</code>,
+     sesión por token, límite de intentos. Todo eso ya existe en <code>app/core/Auth.php</code>
+     de este repo y se puede reciclar.</p>
+</div>
+
+<div class="punto">
+  <div class="punto-cab"><span class="n">03</span><h3>Horario de las clases</h3><span class="tag nuevo">Fase 2</span></div>
+  <p>Para cada clase que estés cursando o repitiendo: <strong>días, hora de entrada y salida,
+     aula, sección y docente</strong>. Con eso la app arma tu horario semanal en una vista de
+     cuadrícula y te avisa si dos clases se te chocan cuando estés armando matrícula.</p>
+  <p>El horario se guarda por período académico, así que el del II Período 2026 no pisa el
+     que tuviste en el I. Al cerrar el período te queda como historial.</p>
+</div>
+
+<div class="punto">
+  <div class="punto-cab"><span class="n">04</span><h3>Compartir pénsum</h3><span class="tag nuevo">Fase 3</span></div>
+  <p>Hoy cada quien tendría que digitar su carrera a mano. Con cuentas, el que arma un pensum
+     lo puede <strong>publicar en un catálogo</strong>, y los demás lo copian de una lista en vez
+     de escribirlo. Vos quedás como autor del plan y podés corregirlo sin romper el avance de nadie.</p>
+</div>
+
+<div class="punto">
+  <div class="punto-cab"><span class="n">05</span><h3>El link público</h3><span class="tag listo">Casi</span></div>
+  <p>Falta un clic tuyo en GitHub Pages y el link queda vivo. Pero ojo con el orden: Pages
+     solo sirve archivos estáticos, no corre PHP. Cuando entre el backend, la app se sube
+     <strong>a tu hosting</strong>, junto a la API. Un solo dominio, sin complicaciones de permisos
+     entre sitios.</p>
+  <p>Mi recomendación: activá Pages ahora para tener el link andando mientras tanto, y cuando
+     esté la Fase 1 lo movemos a tu hosting.</p>
+</div>
+
+<div class="punto">
+  <div class="punto-cab"><span class="n">06</span><h3>La app nativa de iOS</h3><span class="tag">Decisión</span></div>
+  <p>El proyecto Swift en <code>ios/</code> quedó en la primera versión: tres estados, un solo
+     pensum, sin horario. Ponerlo al día es rehacer todo esto una segunda vez, y para instalarlo
+     hace falta una Mac y reinstalarlo cada 7 días con cuenta gratis.</p>
+  <p><strong>Sugerencia:</strong> dejarlo congelado. La versión web instalada se ve y se siente
+     igual, la actualizás sin pedirle permiso a Apple, y funciona también en Android. Si algún
+     día querés App Store de verdad, ahí lo retomamos.</p>
+</div>
+
+<h2>Cómo entra el estudiante</h2>
+
+<figure>
+  <svg viewBox="0 0 520 470" role="img" aria-label="Flujo del estudiante: abre el link, se registra o entra, elige su pensum, marca cada clase con estado, período y horario, y de ahí salen las vistas de matrícula, resumen y horario semanal.">
+    <defs>
+      <marker id="fa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0 0 L10 5 L0 10 z" fill="currentColor"/>
+      </marker>
+    </defs>
+
+    <rect x="170" y="14" width="180" height="42" rx="9" fill="none" stroke="currentColor" stroke-width="1.6"/>
+    <text x="260" y="40" font-size="12.5" text-anchor="middle" fill="currentColor">Abre el link</text>
+    <line x1="260" y1="56" x2="260" y2="80" stroke="currentColor" stroke-width="1.6" marker-end="url(#fa)"/>
+
+    <path d="M260 86 L352 122 L260 158 L168 122 Z" fill="none" stroke="currentColor" stroke-width="1.6"/>
+    <text x="260" y="126" font-size="12" text-anchor="middle" fill="currentColor">¿Ya tiene cuenta?</text>
+
+    <line x1="168" y1="122" x2="106" y2="122" stroke="currentColor" stroke-width="1.6"/>
+    <line x1="106" y1="122" x2="106" y2="176" stroke="currentColor" stroke-width="1.6" marker-end="url(#fa)"/>
+    <text x="136" y="114" font-size="10.5" text-anchor="middle" fill="currentColor" opacity=".7">no</text>
+    <rect x="24" y="182" width="164" height="46" rx="9" fill="none" stroke="currentColor" stroke-width="1.6"/>
+    <text x="106" y="203" font-size="12.5" text-anchor="middle" fill="currentColor">Se registra</text>
+    <text x="106" y="219" font-size="10.5" text-anchor="middle" fill="currentColor" opacity=".6">correo y contraseña</text>
+
+    <line x1="352" y1="122" x2="414" y2="122" stroke="currentColor" stroke-width="1.6"/>
+    <line x1="414" y1="122" x2="414" y2="176" stroke="currentColor" stroke-width="1.6" marker-end="url(#fa)"/>
+    <text x="384" y="114" font-size="10.5" text-anchor="middle" fill="currentColor" opacity=".7">sí</text>
+    <rect x="332" y="182" width="164" height="46" rx="9" fill="none" stroke="currentColor" stroke-width="1.6"/>
+    <text x="414" y="203" font-size="12.5" text-anchor="middle" fill="currentColor">Entra</text>
+    <text x="414" y="219" font-size="10.5" text-anchor="middle" fill="currentColor" opacity=".6">baja su avance</text>
+
+    <path d="M106 228 V256 H260" fill="none" stroke="currentColor" stroke-width="1.6"/>
+    <path d="M414 228 V256 H260" fill="none" stroke="currentColor" stroke-width="1.6"/>
+    <line x1="260" y1="256" x2="260" y2="278" stroke="currentColor" stroke-width="1.6" marker-end="url(#fa)"/>
+
+    <rect x="150" y="284" width="220" height="46" rx="9" fill="none" stroke="currentColor" stroke-width="1.6"/>
+    <text x="260" y="305" font-size="12.5" text-anchor="middle" fill="currentColor">Elige su pensum</text>
+    <text x="260" y="321" font-size="10.5" text-anchor="middle" fill="currentColor" opacity=".6">del catálogo o lo arma</text>
+    <line x1="260" y1="330" x2="260" y2="352" stroke="currentColor" stroke-width="1.6" marker-end="url(#fa)"/>
+
+    <rect x="130" y="358" width="260" height="50" rx="9" fill="none" class="dg-ok-s" stroke-width="2"/>
+    <text x="260" y="379" font-size="12.5" text-anchor="middle" class="dg-ok-t" font-weight="600">Marca cada clase</text>
+    <text x="260" y="396" font-size="10.5" text-anchor="middle" class="dg-ok-t" opacity=".9">estado · período · horario</text>
+
+    <path d="M130 383 H92 V430" fill="none" stroke="currentColor" stroke-width="1.4" marker-end="url(#fa)"/>
+    <path d="M390 383 H428 V430" fill="none" stroke="currentColor" stroke-width="1.4" marker-end="url(#fa)"/>
+    <line x1="260" y1="408" x2="260" y2="430" stroke="currentColor" stroke-width="1.4" marker-end="url(#fa)"/>
+
+    <text x="92"  y="448" font-size="11" text-anchor="middle" fill="currentColor">Puedo llevar</text>
+    <text x="260" y="448" font-size="11" text-anchor="middle" fill="currentColor">Resumen</text>
+    <text x="428" y="448" font-size="11" text-anchor="middle" fill="currentColor">Horario</text>
+  </svg>
+  <figcaption>Marcar una clase es el único momento en que el estudiante escribe algo. Todo lo
+  demás —qué puede matricular, cuánto lleva, cómo le queda la semana— sale de ahí sin que
+  tenga que cargarlo aparte.</figcaption>
+</figure>
+
+<h2>Qué se guarda</h2>
+
+<div class="tabla-wrap">
+<table>
+  <thead><tr><th>Tabla</th><th>Guarda</th><th>Clave</th></tr></thead>
+  <tbody>
+    <tr><td><code>pensum_usuarios</code></td><td>Correo, contraseña con hash, nombre, fecha de registro</td><td>Correo único</td></tr>
+    <tr><td><code>pensum_sesiones</code></td><td>Token de sesión, dispositivo, vencimiento</td><td>Token</td></tr>
+    <tr><td><code>pensum_planes</code></td><td>Carrera, institución, autor, si es público</td><td>Autor</td></tr>
+    <tr><td><code>pensum_clases</code></td><td>Código, nombre, UV, período, área, requisitos, marcas</td><td>Plan + código</td></tr>
+    <tr><td><code>pensum_avance</code></td><td>Estado y período académico de cada clase</td><td>Usuario + plan + clase</td></tr>
+    <tr><td><code>pensum_horarios</code></td><td>Días, hora de entrada y salida, aula, sección, docente</td><td>Usuario + clase + período</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>Tablas aparte de las del sistema de spa, con su propio prefijo. Comparten la base de datos
+y la conexión, pero nada más: si un día querés separar los proyectos, se mueven solas.</p>
+
+<h2>Las fases</h2>
+
+<div class="fase ahora">
+  <div class="idx">1</div>
+  <div>
+    <h3>Que no se pierda nada</h3>
+    <p>Lo que cierra el bug y desbloquea todo lo demás.</p>
+    <ul>
+      <li>API en PHP: registro, entrar, salir, guardar y bajar el avance</li>
+      <li>Pantalla de registro y de entrada dentro de la app</li>
+      <li>Sincronización: el teléfono sigue guardando local y sube los cambios al reconectar</li>
+      <li>Migración automática de lo que ya tenés guardado en el teléfono</li>
+    </ul>
+  </div>
+</div>
+
+<div class="fase">
+  <div class="idx">2</div>
+  <div>
+    <h3>El horario</h3>
+    <ul>
+      <li>Días, horas, aula, sección y docente por clase</li>
+      <li>Vista de la semana en cuadrícula</li>
+      <li>Aviso cuando dos clases se chocan</li>
+      <li>Historial de horarios por período</li>
+    </ul>
+  </div>
+</div>
+
+<div class="fase">
+  <div class="idx">3</div>
+  <div>
+    <h3>Que sirva para toda la U</h3>
+    <ul>
+      <li>Catálogo de pénsum publicados, para copiar en vez de digitar</li>
+      <li>Corregir un plan sin romperle el avance a quien ya lo copió</li>
+      <li>Las demás carreras de la UTH cargadas de fábrica</li>
+    </ul>
+  </div>
+</div>
+
+<div class="fase">
+  <div class="idx">4</div>
+  <div>
+    <h3>Pulido</h3>
+    <ul>
+      <li>Recuperar contraseña por correo</li>
+      <li>Proyección: a este ritmo, cuándo te graduás</li>
+      <li>Índice académico, si querés llevarlo</li>
+    </ul>
+  </div>
+</div>
+
+<div class="nota">
+  <b>Dos cosas que necesito de vos</b>
+  <p><strong>1.</strong> El dominio o subdominio donde va a vivir la app —algo como
+     <code>pensum.tudominio.com</code>. Lo necesito para dejar la app apuntando a la API correcta.</p>
+  <p><strong>2.</strong> Que las credenciales de la base de datos las pongás vos en el archivo
+     <code>.env</code> del servidor. Nunca me las mandés por chat: yo dejo el código leyéndolas
+     de ahí, como ya hace el sistema de spa.</p>
+</div>
+
+<div class="cierre">
+  <h3>Mientras tanto, hoy mismo</h3>
+  <ol>
+    <li>Si la app te está perdiendo el avance, fijate si aparece el aviso amarillo arriba. Si sale, decime qué dice: identifica cuál de las tres causas es.</li>
+    <li>Instalala desde <strong>Safari</strong> con «Añadir a pantalla de inicio» y usá siempre esa, no la pestaña del navegador. Son dos almacenes distintos.</li>
+    <li>Antes de cerrar, <em>Ajustes → Respaldar todo</em> y pegá el código en tus notas. Es tu red mientras llega la Fase 1.</li>
+  </ol>
+</div>
+
+<footer>
+  Mi Pensum · el código vive en <code>pensum-web/</code> del repositorio PROMOL1, rama
+  <code>claude/ios-app-descartar-clases-i2xzwj</code>.
+</footer>
+
+</div>
