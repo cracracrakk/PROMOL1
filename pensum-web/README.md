@@ -15,14 +15,24 @@ internet después de la primera visita (gracias al *service worker*).
 
 ## Publicarla con GitHub Pages
 
-Para tener un link propio y permanente, sin depender de nadie:
+Para tener un link propio y permanente, sin depender de nadie. El repo es público,
+así que Pages funciona con el plan gratuito.
 
-1. En GitHub: **Settings → Pages**.
-2. *Source*: **Deploy from a branch**, rama `main`, carpeta `/ (root)` → **Save**.
-3. En un par de minutos queda en
-   `https://cracracrakk.github.io/PROMOL1/pensum-web/`.
+1. En GitHub, entrá a **Settings → Pages**.
+2. En *Source* elegí **Deploy from a branch**.
+3. *Branch*: `claude/ios-app-descartar-clases-i2xzwj` — la rama donde están estos
+   archivos. Carpeta: `/ (root)`. Dale **Save**.
+4. Esperá un par de minutos y la app queda en
+   **https://cracracrakk.github.io/PROMOL1/pensum-web/**
 
 Esa URL es la que abrís en Safari para instalarla.
+
+Ojo con dos cosas:
+
+- La rama por defecto de este repo no es `main`, es `claude/programming-capabilities-txmzN`.
+  Si preferís servir desde ahí, primero mergeá esta rama.
+- Pages publica **toda** la rama que elijas, no solo `pensum-web/`. El repo ya es público,
+  así que no expone nada nuevo, pero tenelo en cuenta si algún día lo volvés privado.
 
 ## Archivos
 
